@@ -17,6 +17,7 @@
 body{font-family:'Inter',sans-serif; background:var(--bg-body); color:var(--text-main); display:flex; height:100vh; overflow:hidden; font-size:14px; -webkit-font-smoothing:antialiased;}
 @media (prefers-reduced-motion: reduce){ *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;} }
 
+/* --- SIDEBAR --- */
 aside{width:224px; background:#070c16; border-right:1px solid var(--border-soft); padding:24px 14px; display:flex; flex-direction:column; justify-content:space-between; flex-shrink:0;}
 .brand{display:flex; align-items:center; gap:9px; padding:0 8px 28px;}
 .brand-mark{width:26px; height:26px; border-radius:7px; background:linear-gradient(155deg,var(--accent),#0e6b48); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; color:#04120c; flex-shrink:0;}
@@ -35,11 +36,14 @@ nav{display:flex; flex-direction:column; gap:2px;}
 .user-name{font-size:12px; font-weight:600;}
 .user-role{font-size:11px; color:var(--text-dim);}
 
+/* --- MAIN --- */
 main{flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0;}
 header{background:#070c16; border-bottom:1px solid var(--border-soft); padding:14px 30px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0;}
 .conn-label{color:var(--text-muted); font-weight:500; font-size:13px;}
 .conn-status{display:flex; gap:16px; font-family:var(--mono); font-size:11.5px;}
-.dot{width:6px; height:6px; border-radius:50%; background:var(--accent); display:inline-block; margin-right:6px; box-shadow:0 0 0 3px rgba(34,197,139,.15);}
+.dot{width:6px; height:6px; border-radius:50%; display:inline-block; margin-right:6px;}
+.dot.on{background:var(--accent); box-shadow:0 0 0 3px rgba(34,197,139,.15);}
+.dot.off{background:var(--red); box-shadow:0 0 0 3px rgba(242,73,92,.15);}
 .conn-status span{color:var(--text-muted); display:flex; align-items:center;}
 
 .view{display:none; overflow-y:auto; flex:1;}
@@ -50,6 +54,7 @@ header{background:#070c16; border-bottom:1px solid var(--border-soft); padding:1
 .page-header h1{font-size:1.4rem; font-weight:700; letter-spacing:-0.01em; margin-bottom:4px;}
 .page-header p{color:var(--text-muted); font-size:13px;}
 
+/* --- BOTONES --- */
 .btn{border:none; padding:10px 18px; border-radius:7px; font-weight:600; cursor:pointer; font-size:13.5px; font-family:'Inter',sans-serif; transition:filter .15s, transform .1s;}
 .btn:active{transform:translateY(1px);}
 .btn-primary{background:var(--accent); color:#04150e;}
@@ -61,129 +66,43 @@ header{background:#070c16; border-bottom:1px solid var(--border-soft); padding:1
 .btn-danger-outline{background:transparent; border:1px solid rgba(242,73,92,.4); color:var(--red);}
 .btn-danger-outline:hover{background:rgba(242,73,92,.08);}
 
+/* --- TARJETAS ALYCS --- */
+.alyc-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:16px;}
+.alyc-card{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:10px; padding:20px; display:flex; flex-direction:column; gap:12px;}
+.alyc-head{display:flex; justify-content:space-between; align-items:center;}
+.alyc-title{font-size:15px; font-weight:600;}
+.alyc-status{font-size:11px; font-weight:600; padding:4px 8px; border-radius:5px;}
+.alyc-status.connected{background:rgba(34,197,139,.12); color:var(--accent);}
+.alyc-status.disconnected{background:rgba(242,73,92,.12); color:var(--red);}
+.alyc-desc{color:var(--text-muted); font-size:12.5px; line-height:1.4;}
+
+/* --- METRICAS Y TABLAS --- */
 .card-row{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
 .metric-card{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:10px; padding:16px 18px;}
 .metric-label{color:var(--text-dim); font-size:11.5px; margin-bottom:6px; font-weight:600;}
 .metric-value{font-size:1.3rem; font-weight:700; letter-spacing:-0.01em;}
 .metric-sub{font-size:11.5px; color:var(--text-muted); margin-top:3px;}
 
-.progress-wrap{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:10px; padding:16px 18px; display:flex; align-items:center; gap:16px;}
-.progress-track{flex:1; height:7px; border-radius:99px; background:#0e1729; overflow:hidden;}
-.progress-fill{height:100%; width:0%; background:linear-gradient(90deg,var(--accent-dim),var(--accent)); border-radius:99px; transition:width .5s ease;}
-.progress-count{font-family:var(--mono); font-size:12.5px; color:var(--text-muted); white-space:nowrap;}
-
-.toolbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
-.search-box{flex:1; min-width:180px; display:flex; align-items:center; gap:8px; background:var(--bg-card); border:1px solid var(--border-soft); border-radius:7px; padding:8px 12px;}
-.search-box input{background:transparent; border:none; outline:none; color:var(--text-main); font-size:13px; width:100%;}
-.search-box input::placeholder{color:var(--text-dim);}
-.filter-chip{background:var(--bg-card); border:1px solid var(--border-soft); color:var(--text-muted); padding:8px 13px; border-radius:7px; font-size:12.5px; font-weight:500; cursor:pointer; white-space:nowrap; transition:.15s;}
-.filter-chip.active{border-color:var(--accent); color:var(--accent); background:rgba(34,197,139,.08);}
-.filter-chip:hover{color:var(--text-main);}
-
 .table-container{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:10px; overflow:hidden;}
 table{width:100%; border-collapse:collapse; text-align:left;}
-th{background:#0e1729; color:var(--text-dim); padding:11px 18px; font-size:11px; font-weight:600; letter-spacing:.02em; border-bottom:1px solid var(--border-soft);}
+th{background:#0e1729; color:var(--text-dim); padding:11px 18px; font-size:11px; font-weight:600; border-bottom:1px solid var(--border-soft);}
 td{padding:13px 18px; border-bottom:1px solid var(--border-soft); font-size:13px; vertical-align:middle;}
-tbody tr{transition:background .12s;}
-tbody tr:last-child td{border-bottom:none;}
-tbody tr.clickable{cursor:pointer;}
-tbody tr.clickable:hover td{background:var(--bg-card-hover);}
-.client-name{font-weight:600;}
-.client-id{color:var(--text-dim); font-size:11.5px; font-family:var(--mono);}
-.badge-broker{padding:3px 8px; border-radius:5px; font-size:10.5px; font-weight:600; background:#0e1729; border:1px solid var(--border-soft); color:var(--text-muted); font-family:var(--mono);}
-.badge-risk{padding:3px 8px; border-radius:5px; font-size:10.5px; font-weight:600;}
-.badge-risk.conservador{background:rgba(76,141,255,.12); color:var(--blue);}
-.badge-risk.moderado{background:rgba(245,165,36,.12); color:var(--amber);}
-.badge-risk.agresivo{background:rgba(242,73,92,.12); color:var(--red);}
-.tag-buy{color:var(--accent); font-weight:700;}
-.tag-sell{color:var(--red); font-weight:700;}
-.amount{font-family:var(--mono); font-variant-numeric:tabular-nums;}
+tbody tr:hover td{background:var(--bg-card-hover);}
 
-.status{display:inline-flex; align-items:center; gap:7px; font-weight:600; font-size:12px;}
-.status-pending{color:var(--text-dim);}
-.status-api{color:var(--blue);}
-.status-ws-partial{color:var(--amber);}
-.status-done{color:var(--accent);}
-.status-error{color:var(--red);}
-.spinner{width:11px; height:11px; border:2px solid transparent; border-top-color:currentColor; border-radius:50%; animation:spin .8s linear infinite;}
-@keyframes spin{100%{transform:rotate(360deg);}}
-.pulse-dot{width:6px; height:6px; border-radius:50%; background:currentColor; animation:pulse 1.4s ease-in-out infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
-.retry-link{background:none; border:none; color:var(--red); text-decoration:underline; font-size:11.5px; cursor:pointer; font-weight:600; margin-left:4px;}
-.row-remove{background:none; border:none; color:var(--text-dim); font-size:14px; cursor:pointer; padding:2px 6px;}
-.row-remove:hover{color:var(--red);}
-
-.log-panel{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:10px; padding:0; overflow:hidden;}
-.log-head{padding:12px 18px; border-bottom:1px solid var(--border-soft); font-weight:600; font-size:12.5px; color:var(--text-muted); display:flex; justify-content:space-between; align-items:center;}
-.log-body{max-height:180px; overflow-y:auto; padding:6px 0;}
-.log-body:empty::after{content:'Sin eventos todavía. Agregá órdenes o iniciá el rebalanceo para ver la actividad en vivo.'; display:block; padding:20px 18px; color:var(--text-dim); font-size:12.5px;}
-.log-row{padding:6px 18px; font-family:var(--mono); font-size:11.5px; color:var(--text-muted); display:flex; gap:10px; animation:fadeIn .25s ease;}
-@keyframes fadeIn{from{opacity:0; transform:translateY(-2px);}to{opacity:1; transform:translateY(0);}}
-.log-time{color:var(--text-dim); flex-shrink:0;}
-
-.stats-strip{display:flex; gap:14px; flex-wrap:wrap;}
-.stat-pill{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:9px; padding:12px 16px; flex:1; min-width:140px;}
-.stat-pill .metric-value{font-size:1.1rem;}
-
-.dash-grid{display:grid; grid-template-columns:1.4fr 1fr; gap:16px;}
-.panel{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:10px; padding:18px 20px;}
-.panel h3{font-size:13px; font-weight:600; margin-bottom:14px; color:var(--text-main);}
-.bar-row{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
-.bar-label{width:80px; font-size:12px; color:var(--text-muted); flex-shrink:0;}
-.bar-track{flex:1; height:8px; background:#0e1729; border-radius:99px; overflow:hidden;}
-.bar-fill{height:100%; border-radius:99px;}
-.bar-val{width:56px; text-align:right; font-family:var(--mono); font-size:11.5px; color:var(--text-muted);}
-.activity-item{display:flex; gap:10px; padding:9px 0; border-bottom:1px solid var(--border-soft); font-size:12.5px;}
-.activity-item:last-child{border-bottom:none;}
-.activity-dot{width:6px; height:6px; border-radius:50%; margin-top:5px; flex-shrink:0;}
-.activity-text{color:var(--text-muted); line-height:1.4;}
-.activity-text strong{color:var(--text-main); font-weight:600;}
-
-.empty-state{text-align:center; padding:50px 20px; color:var(--text-dim);}
-.empty-state .emoji{font-size:28px; margin-bottom:10px; opacity:.6;}
-.empty-state p{font-size:13px;}
-
-.modal-overlay{position:fixed; inset:0; background:rgba(4,8,16,.65); backdrop-filter:blur(2px); display:none; align-items:center; justify-content:center; z-index:50; animation:fadeIn .15s ease; padding:20px;}
+/* --- MODALES Y FORMULARIOS --- */
+.modal-overlay{position:fixed; inset:0; background:rgba(4,8,16,.65); backdrop-filter:blur(2px); display:none; align-items:center; justify-content:center; z-index:50;}
 .modal-overlay.show{display:flex;}
-.modal{background:var(--bg-panel); border:1px solid var(--border); border-radius:12px; width:440px; max-width:100%; max-height:90vh; overflow-y:auto; padding:24px; box-shadow:0 20px 50px rgba(0,0,0,.4); position:relative;}
+.modal{background:var(--bg-panel); border:1px solid var(--border); border-radius:12px; width:440px; padding:24px; position:relative;}
 .modal h2{font-size:1.05rem; margin-bottom:4px;}
 .modal .modal-sub{color:var(--text-muted); font-size:12.5px; margin-bottom:18px;}
-.modal-row{display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--border-soft); font-size:13px;}
-.modal-row:last-child{border-bottom:none;}
-.modal-row span:first-child{color:var(--text-muted);}
-.modal-row span:last-child{font-weight:600; font-family:var(--mono);}
+.field{margin-bottom:14px;}
+.field label{display:block; font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px;}
+.field input, .field select{width:100%; background:#0e1729; border:1px solid var(--border-soft); border-radius:7px; padding:9px 11px; color:var(--text-main); font-size:13px;}
 .modal-actions{display:flex; gap:10px; margin-top:20px;}
 .modal-close{position:absolute; top:16px; right:16px; background:none; border:none; color:var(--text-dim); font-size:18px; cursor:pointer;}
 
-.field{margin-bottom:14px;}
-.field label{display:block; font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px;}
-.field input, .field select{width:100%; background:#0e1729; border:1px solid var(--border-soft); border-radius:7px; padding:9px 11px; color:var(--text-main); font-size:13px; font-family:'Inter',sans-serif; outline:none; transition:border-color .15s;}
-.field input:focus, .field select:focus{border-color:var(--blue);}
-.field-row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
-.field-hint{font-size:11px; color:var(--text-dim); margin-top:4px;}
-.compute-box{background:#0e1729; border:1px solid var(--border-soft); border-radius:8px; padding:12px 14px; display:flex; justify-content:space-between; align-items:center; margin-top:4px;}
-.compute-box .label{font-size:12px; color:var(--text-muted);}
-.compute-box .value{font-family:var(--mono); font-weight:700; font-size:15px;}
-.form-error{color:var(--red); font-size:12px; margin-top:-6px; margin-bottom:12px; display:none;}
-.form-error.show{display:block;}
-
-@media (max-width:920px){
-  aside{position:fixed; left:-224px; z-index:40; height:100vh; transition:left .2s;}
-  .card-row{grid-template-columns:repeat(2,1fr);}
-  .dash-grid{grid-template-columns:1fr;}
-  .field-row{grid-template-columns:1fr;}
-  header{padding:14px 18px;}
-  .workspace{padding:18px;}
-  table{font-size:12px;}
-  th,td{padding:10px 12px;}
-}
-
-button:focus-visible, input:focus-visible, select:focus-visible, .nav-item:focus-visible, tr:focus-visible{outline:2px solid var(--blue); outline-offset:2px;}
-::-webkit-scrollbar{width:9px; height:9px;}
-::-webkit-scrollbar-thumb{background:#233250; border-radius:99px;}
-::-webkit-scrollbar-track{background:transparent;}
-
-#toast{position:fixed; bottom:22px; right:22px; background:var(--accent); color:#04150e; padding:14px 20px; border-radius:9px; font-weight:700; font-size:13px; display:flex; align-items:center; gap:10px; transform:translateY(90px); opacity:0; transition:all .3s cubic-bezier(.2,.8,.2,1); box-shadow:0 14px 30px rgba(0,0,0,.35); z-index:60;}
+/* TOAST */
+#toast{position:fixed; bottom:22px; right:22px; background:var(--accent); color:#04150e; padding:14px 20px; border-radius:9px; font-weight:700; font-size:13px; transform:translateY(90px); opacity:0; transition:all .3s ease; z-index:60;}
 #toast.show{transform:translateY(0); opacity:1;}
 </style>
 </head>
@@ -196,9 +115,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, .nav-item:focus
       <div class="brand-name">Rebalancia<em>.io</em></div>
     </div>
     <nav>
-      <div class="nav-item" data-view="dashboard" tabindex="0"><span class="nav-icon">◇</span> Dashboard</div>
-      <div class="nav-item active" data-view="ejecucion" tabindex="0"><span class="nav-icon">⚡</span> Ejecución</div>
-      <div class="nav-item" data-view="comitentes" tabindex="0"><span class="nav-icon">◎</span> Comitentes</div>
+      <div class="nav-item" data-view="dashboard"><span class="nav-icon">◇</span> Dashboard</div>
+      <div class="nav-item active" data-view="ejecucion"><span class="nav-icon">⚡</span> Ejecución</div>
+      <div class="nav-item" data-view="comitentes"><span class="nav-icon">◎</span> Comitentes</div>
+      <div class="nav-item" data-view="conexiones"><span class="nav-icon">🔗</span> Conexiones ALyCs</div>
     </nav>
   </div>
   <div class="sidebar-foot">
@@ -212,631 +132,258 @@ button:focus-visible, input:focus-visible, select:focus-visible, .nav-item:focus
 
 <main>
   <header>
-    <div class="conn-label">Conexión API REST + WebSockets</div>
-    <div class="conn-status">
-      <span><span class="dot"></span>IOL API</span>
-      <span><span class="dot"></span>PPI API</span>
-      <span><span class="dot"></span>Balanz API</span>
+    <div class="conn-label">Estado de Conexiones Activas</div>
+    <div class="conn-status" id="header-conn-status">
+      <!-- Se llena por JS -->
     </div>
   </header>
 
+  <!-- VISTA EJECUCION (Simplificada para el ejemplo, contiene la tabla original) -->
   <section class="view active" id="view-ejecucion">
     <div class="workspace">
       <div class="page-header">
-        <div>
-          <h1>Rebalanceo en lote</h1>
-          <p>Modelo: Conservador ARS (Soberanos + LECAPs) · armá el lote y ejecutalo cuando esté listo</p>
-        </div>
+        <div><h1>Rebalanceo en lote</h1><p>Armá el lote y ejecutalo cuando esté listo</p></div>
         <div style="display:flex; gap:10px;">
           <button class="btn btn-ghost" id="btnAddOrder">+ Agregar orden</button>
-          <button class="btn btn-ghost" id="btnReset">↺ Reiniciar</button>
           <button id="btnExecute" class="btn btn-primary">⚡ Ejecutar órdenes</button>
         </div>
       </div>
-
-      <div class="card-row">
-        <div class="metric-card">
-          <div class="metric-label">AUM IMPACTADO</div>
-          <div class="metric-value" id="metricAum">$ 0</div>
-          <div class="metric-sub" id="metricAumSub">sobre 0 comitentes</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-label">ÓRDENES EN EL LOTE</div>
-          <div class="metric-value" id="metricOrders">0</div>
-          <div class="metric-sub">compras y ventas</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-label">TIPO DE ENVÍO</div>
-          <div class="metric-value" style="color:var(--blue);">REST Batch</div>
-          <div class="metric-sub">envío secuenciado</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-label">MONITOREO</div>
-          <div class="metric-value" style="color:var(--amber);">WebSockets</div>
-          <div class="metric-sub">estado en vivo por orden</div>
-        </div>
-      </div>
-
-      <div class="progress-wrap">
-        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-        <div class="progress-count" id="progressCount">0 / 0 ejecutadas</div>
-      </div>
-
-      <div class="toolbar">
-        <div class="search-box">
-          <span style="color:var(--text-dim);">⌕</span>
-          <input type="text" id="searchInput" placeholder="Buscar por comitente, símbolo o ALyC...">
-        </div>
-        <button class="filter-chip active" data-filter="todas">Todas</button>
-        <button class="filter-chip" data-filter="COMPRAR">Compras</button>
-        <button class="filter-chip" data-filter="VENDER">Ventas</button>
-      </div>
-
       <div class="table-container">
         <table>
-          <thead><tr><th>Comitente</th><th>ALyC</th><th>Acción</th><th>Monto</th><th>Estado en vivo</th><th></th></tr></thead>
+          <thead><tr><th>Comitente</th><th>ALyC</th><th>Acción</th><th>Monto</th><th>Estado</th></tr></thead>
           <tbody id="ordersTable"></tbody>
         </table>
       </div>
-
-      <div class="log-panel">
-        <div class="log-head"><span>Actividad en vivo</span><span id="logCount" style="font-family:var(--mono); font-weight:400; color:var(--text-dim);"></span></div>
-        <div class="log-body" id="logBody"></div>
-      </div>
     </div>
   </section>
 
-  <section class="view" id="view-dashboard">
-    <div class="workspace">
-      <div class="page-header">
-        <div><h1>Dashboard</h1><p>Actividad de rebalanceo de los últimos 7 días</p></div>
-      </div>
-      <div class="card-row">
-        <div class="metric-card"><div class="metric-label">ÓRDENES EJECUTADAS</div><div class="metric-value">128</div><div class="metric-sub">últimos 7 días</div></div>
-        <div class="metric-card"><div class="metric-label">TASA DE ÉXITO</div><div class="metric-value" style="color:var(--accent);">96,1%</div><div class="metric-sub">5 reintentos exitosos</div></div>
-        <div class="metric-card"><div class="metric-label">TIEMPO PROMEDIO</div><div class="metric-value">3,4 s</div><div class="metric-sub">envío → confirmación</div></div>
-        <div class="metric-card"><div class="metric-label">AUM BAJO GESTIÓN</div><div class="metric-value" id="dashAum">$ 412 M</div><div class="metric-sub">62 comitentes activos</div></div>
-      </div>
-      <div class="dash-grid">
-        <div class="panel">
-          <h3>Volumen por ALyC (7 días)</h3>
-          <div class="bar-row"><div class="bar-label">PPI</div><div class="bar-track"><div class="bar-fill" style="width:82%; background:var(--accent);"></div></div><div class="bar-val">$ 168M</div></div>
-          <div class="bar-row"><div class="bar-label">Balanz</div><div class="bar-track"><div class="bar-fill" style="width:58%; background:var(--blue);"></div></div><div class="bar-val">$ 119M</div></div>
-          <div class="bar-row"><div class="bar-label">IOL</div><div class="bar-track"><div class="bar-fill" style="width:46%; background:var(--amber);"></div></div><div class="bar-val">$ 94M</div></div>
-          <div class="bar-row"><div class="bar-label">Cocos</div><div class="bar-track"><div class="bar-fill" style="width:15%; background:var(--text-dim);"></div></div><div class="bar-val">$ 31M</div></div>
-        </div>
-        <div class="panel">
-          <h3>Últimos eventos</h3>
-          <div class="activity-item"><div class="activity-dot" style="background:var(--accent);"></div><div class="activity-text"><strong>Lote #204</strong> ejecutado 100% · hace 6 min</div></div>
-          <div class="activity-item"><div class="activity-dot" style="background:var(--blue);"></div><div class="activity-text">Nuevo modelo <strong>Conservador ARS</strong> publicado · hace 2 h</div></div>
-          <div class="activity-item"><div class="activity-dot" style="background:var(--amber);"></div><div class="activity-text">Reintento en orden tras rechazo de ALyC · hace 5 h</div></div>
-          <div class="activity-item"><div class="activity-dot" style="background:var(--accent);"></div><div class="activity-text"><strong>Lote #203</strong> ejecutado 100% · 12 órdenes · ayer</div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
+  <!-- VISTA COMITENTES -->
   <section class="view" id="view-comitentes">
     <div class="workspace">
       <div class="page-header">
-        <div><h1>Comitentes</h1><p>Cuentas gestionadas y disponibles para incluir en el rebalanceo</p></div>
+        <div><h1>Comitentes</h1><p>Cuentas gestionadas listas para rebalanceo</p></div>
         <button class="btn btn-primary" id="btnAddClient">+ Agregar comitente</button>
       </div>
-
-      <div class="stats-strip">
-        <div class="stat-pill"><div class="metric-label">TOTAL COMITENTES</div><div class="metric-value" id="statTotalClients">0</div></div>
-        <div class="stat-pill"><div class="metric-label">ALyCs INVOLUCRADAS</div><div class="metric-value" id="statBrokers">0</div></div>
-        <div class="stat-pill"><div class="metric-label">CARTERA TOTAL</div><div class="metric-value" id="statPortfolio">$ 0</div></div>
-      </div>
-
       <div class="table-container">
         <table>
-          <thead><tr><th>Comitente</th><th>ALyC</th><th>Perfil</th><th>Cartera actual</th><th>Última operación</th><th></th></tr></thead>
+          <thead><tr><th>Nombre</th><th>Cuenta ID</th><th>ALyC</th><th>Perfil</th><th>Cartera Total</th></tr></thead>
           <tbody id="clientsTable"></tbody>
         </table>
       </div>
     </div>
   </section>
+
+  <!-- VISTA CONEXIONES ALYCS (NUEVA) -->
+  <section class="view" id="view-conexiones">
+    <div class="workspace">
+      <div class="page-header">
+        <div>
+          <h1>Conexiones ALyCs</h1>
+          <p>Vinculá las cuentas maestras de los brokers para leer tenencias y ejecutar órdenes.</p>
+        </div>
+      </div>
+      
+      <div class="alyc-grid" id="alycGrid">
+        <!-- Renderizado por JS -->
+      </div>
+    </div>
+  </section>
 </main>
 
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <button class="modal-close" id="modalClose">✕</button>
-    <h2 id="modalTitle">Detalle de la orden</h2>
-    <div class="modal-sub" id="modalSub"></div>
-    <div id="modalBody"></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost btn-sm" id="modalCloseBtn" style="flex:1;">Cerrar</button>
-      <button class="btn btn-danger-outline btn-sm" id="modalCancelBtn" style="flex:1;">Cancelar orden</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="orderModalOverlay">
-  <div class="modal">
-    <button class="modal-close" id="orderModalClose">✕</button>
-    <h2>Agregar orden</h2>
-    <div class="modal-sub">Elegí comitente, símbolo y nominales — el monto se calcula solo</div>
-    <form id="orderForm">
-      <div class="field">
-        <label for="ofClient">Comitente</label>
-        <select id="ofClient" required></select>
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label for="ofAction">Acción</label>
-          <select id="ofAction" required>
-            <option value="COMPRAR">Comprar</option>
-            <option value="VENDER">Vender</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="ofSymbol">Símbolo</label>
-          <select id="ofSymbol" required></select>
-        </div>
-      </div>
-      <div class="field">
-        <label for="ofQty">Nominales</label>
-        <input type="number" id="ofQty" min="1" step="1" placeholder="ej: 1000" required>
-        <div class="field-hint" id="ofPriceHint">Precio de referencia: —</div>
-      </div>
-      <div class="compute-box">
-        <span class="label">Monto estimado</span>
-        <span class="value" id="ofComputed">$ 0</span>
-      </div>
-      <div class="form-error" id="orderFormError">Completá comitente, símbolo y una cantidad de nominales válida.</div>
-      <div class="modal-actions">
-        <button type="button" class="btn btn-ghost btn-sm" id="orderCancelBtn" style="flex:1;">Cancelar</button>
-        <button type="submit" class="btn btn-primary btn-sm" style="flex:1;">Agregar al lote</button>
-      </div>
-    </form>
-  </div>
-</div>
-
+<!-- MODAL: AGREGAR COMITENTE -->
 <div class="modal-overlay" id="clientModalOverlay">
   <div class="modal">
     <button class="modal-close" id="clientModalClose">✕</button>
     <h2>Agregar comitente</h2>
-    <div class="modal-sub">Se suma a la base y queda disponible para incluirlo en próximos lotes</div>
+    <div class="modal-sub">Se suma a la base y queda disponible para operar</div>
     <form id="clientForm">
       <div class="field">
-        <label for="cfName">Nombre / razón social</label>
-        <input type="text" id="cfName" placeholder="ej: Rodríguez, A." required>
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label for="cfBroker">ALyC</label>
-          <select id="cfBroker" required>
-            <option value="PPI">PPI</option>
-            <option value="BALANZ">Balanz</option>
-            <option value="IOL">IOL</option>
-            <option value="COCOS">Cocos Capital</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="cfRisk">Perfil de riesgo</label>
-          <select id="cfRisk" required>
-            <option value="conservador">Conservador</option>
-            <option value="moderado">Moderado</option>
-            <option value="agresivo">Agresivo</option>
-          </select>
-        </div>
+        <label>Nombre / razón social</label>
+        <input type="text" id="cfName" required>
       </div>
       <div class="field">
-        <label for="cfPortfolio">Cartera actual (ARS)</label>
-        <input type="number" id="cfPortfolio" min="0" step="1000" placeholder="ej: 5000000" required>
+        <label>ALyC</label>
+        <select id="cfBroker" required>
+          <option value="PPI">PPI</option>
+          <option value="BALANZ">Balanz</option>
+          <option value="IOL">IOL</option>
+          <option value="COCOS">Cocos Capital</option>
+        </select>
       </div>
-      <div class="form-error" id="clientFormError">Completá todos los campos para dar de alta al comitente.</div>
+      <div class="field">
+        <label>Perfil de riesgo</label>
+        <select id="cfRisk" required>
+          <option value="Conservador">Conservador</option>
+          <option value="Moderado">Moderado</option>
+          <option value="Agresivo">Agresivo</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Cartera actual (ARS)</label>
+        <input type="number" id="cfPortfolio" required>
+      </div>
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost btn-sm" id="clientCancelBtn" style="flex:1;">Cancelar</button>
-        <button type="submit" class="btn btn-primary btn-sm" style="flex:1;">Agregar comitente</button>
+        <button type="submit" class="btn btn-primary btn-sm" style="flex:1;">Guardar</button>
       </div>
     </form>
   </div>
 </div>
 
-<div id="toast">✓ Rebalanceo ejecutado con éxito</div>
+<!-- MODAL: VINCULAR API ALYC -->
+<div class="modal-overlay" id="apiModalOverlay">
+  <div class="modal">
+    <button class="modal-close" id="apiModalClose">✕</button>
+    <h2 id="apiModalTitle">Vincular API</h2>
+    <div class="modal-sub">Ingresá tus credenciales institucionales.</div>
+    <form id="apiForm">
+      <input type="hidden" id="apiBrokerName">
+      <div class="field">
+        <label>API Key / Token Público</label>
+        <input type="text" placeholder="ej: pk_live_8392jf..." required>
+      </div>
+      <div class="field">
+        <label>Secret Key (Solo lectura y operatoria)</label>
+        <input type="password" placeholder="******************" required>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="apiCancelBtn" style="flex:1;">Cancelar</button>
+        <button type="submit" class="btn btn-primary btn-sm" style="flex:1;">Conectar Broker</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast">Acción completada</div>
 
 <script>
-const SYMBOLS = [
-  { ticker:"AL30",  name:"Bonar 2030 (Ley Arg.)",  price:660 },
-  { ticker:"GD30",  name:"Global 2030 (Ley NY)",   price:672 },
-  { ticker:"AE38",  name:"Bonar 2038",             price:590 },
-  { ticker:"T2X4",  name:"Bote Dual 2024",         price:1175 },
-  { ticker:"S31O4", name:"LECAP Oct-24",           price:1100 },
-  { ticker:"S16D4", name:"LECAP Dic-24",           price:1082 },
-  { ticker:"TX26",  name:"Bonte CER 2026",         price:1310 },
-  { ticker:"YPFD",  name:"YPF S.A.",               price:22400 }
-];
-const symbolMap = Object.fromEntries(SYMBOLS.map(s=>[s.ticker,s]));
+// --- NAVEGACIÓN ---
+document.querySelectorAll(".nav-item").forEach(item => {
+  item.addEventListener("click", () => {
+    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+    item.classList.add("active");
+    document.getElementById("view-" + item.dataset.view).classList.add("active");
+  });
+});
 
+// --- ESTADO DE ALYCS ---
+let alycs = [
+  { name: "PPI", connected: true, desc: "Portfolio Personal Inversiones. Conexión institucional." },
+  { name: "Balanz", connected: true, desc: "API Retail y Agentes. Ejecución rápida." },
+  { name: "IOL", connected: false, desc: "InvertirOnline. Requiere Token OAuth2." },
+  { name: "Cocos Capital", connected: false, desc: "Cocos API REST. Sin comisiones." }
+];
+
+function renderAlycs() {
+  const grid = document.getElementById("alycGrid");
+  const headerStatus = document.getElementById("header-conn-status");
+  
+  grid.innerHTML = alycs.map(a => `
+    <div class="alyc-card">
+      <div class="alyc-head">
+        <div class="alyc-title">${a.name}</div>
+        <div class="alyc-status ${a.connected ? 'connected' : 'disconnected'}">
+          ${a.connected ? '✓ Conectado' : '✕ Desconectado'}
+        </div>
+      </div>
+      <div class="alyc-desc">${a.desc}</div>
+      <button class="btn ${a.connected ? 'btn-ghost' : 'btn-primary'} btn-sm" 
+              onclick="${a.connected ? `disconnectAlyc('${a.name}')` : `openApiModal('${a.name}')`}">
+        ${a.connected ? 'Desvincular' : 'Conectar API Key'}
+      </button>
+    </div>
+  `).join("");
+
+  headerStatus.innerHTML = alycs.map(a => `
+    <span><span class="dot ${a.connected ? 'on' : 'off'}"></span>${a.name}</span>
+  `).join("");
+}
+
+// Lógica Modales ALyC
+const apiModal = document.getElementById("apiModalOverlay");
+function openApiModal(brokerName) {
+  document.getElementById("apiModalTitle").innerText = `Vincular API: ${brokerName}`;
+  document.getElementById("apiBrokerName").value = brokerName;
+  document.getElementById("apiForm").reset();
+  apiModal.classList.add("show");
+}
+
+document.getElementById("apiForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const broker = document.getElementById("apiBrokerName").value;
+  const alyc = alycs.find(a => a.name === broker);
+  if (alyc) alyc.connected = true;
+  apiModal.classList.remove("show");
+  renderAlycs();
+  showToast(`¡Conectado exitosamente con ${broker}!`);
+});
+
+function disconnectAlyc(brokerName) {
+  const alyc = alycs.find(a => a.name === brokerName);
+  if (alyc) alyc.connected = false;
+  renderAlycs();
+  showToast(`Desvinculado de ${brokerName}`);
+}
+document.getElementById("apiModalClose").onclick = () => apiModal.classList.remove("show");
+document.getElementById("apiCancelBtn").onclick = () => apiModal.classList.remove("show");
+
+
+// --- LÓGICA DE COMITENTES ---
 let clients = [
-  { id:"#10492", name:"Pérez, J. C.", broker:"PPI", risk:"conservador", portfolio:18400000, last:"hace 6 min" },
-  { id:"#88210", name:"Inversora Sur SA", broker:"BALANZ", risk:"moderado", portfolio:61200000, last:"hace 6 min" },
-  { id:"#45912", name:"Gómez, M.", broker:"IOL", risk:"conservador", portfolio:5100000, last:"hace 6 min" },
-  { id:"#12093", name:"Fund. Pampa", broker:"PPI", risk:"agresivo", portfolio:92700000, last:"hace 6 min" }
+  { id: "#10492", name: "Pérez, J. C.", broker: "PPI", risk: "Conservador", portfolio: 18400000 },
+  { id: "#88210", name: "Inversora Sur SA", broker: "Balanz", risk: "Moderado", portfolio: 61200000 }
 ];
 let nextClientNum = 20000;
 
-let orders = [
-  { id:1, clientId:"#10492", broker:"PPI",    action:"COMPRAR", ticker:"AL30",  qty:1800,  amount:1188000, state:"pending", error:false },
-  { id:2, clientId:"#88210", broker:"BALANZ", action:"VENDER",  ticker:"T2X4",  qty:12000, amount:14100000, state:"pending", error:false },
-  { id:3, clientId:"#45912", broker:"IOL",    action:"COMPRAR", ticker:"S31O4", qty:350,   amount:385000,  state:"pending", error:false },
-  { id:4, clientId:"#12093", broker:"PPI",    action:"COMPRAR", ticker:"AL30",  qty:10500, amount:6930000, state:"pending", error:false }
-];
-let nextOrderId = 5;
-
-const fmtMoney = n => "$ " + Math.round(n).toLocaleString("es-AR");
-const nowTime = () => new Date().toLocaleTimeString("es-AR", { hour:"2-digit", minute:"2-digit", second:"2-digit" });
-const clientById = id => clients.find(c=>c.id===id);
-
-document.querySelectorAll(".nav-item").forEach(item=>{
-  item.addEventListener("click", ()=> switchView(item.dataset.view));
-  item.addEventListener("keydown", e=>{ if(e.key==="Enter") switchView(item.dataset.view); });
-});
-function switchView(name){
-  document.querySelectorAll(".nav-item").forEach(n=>n.classList.toggle("active", n.dataset.view===name));
-  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active", v.id==="view-"+name));
-  if(name==="comitentes") renderClients();
+function renderClients() {
+  const tbody = document.getElementById("clientsTable");
+  tbody.innerHTML = clients.map(c => `
+    <tr>
+      <td><b>${c.name}</b></td>
+      <td style="color:var(--text-muted);">${c.id}</td>
+      <td>${c.broker}</td>
+      <td>${c.risk}</td>
+      <td style="font-family:var(--mono);">$ ${c.portfolio.toLocaleString('es-AR')}</td>
+    </tr>
+  `).join("");
 }
 
-const tableBody = document.getElementById("ordersTable");
-let activeFilter = "todas";
-let searchTerm = "";
-
-function statusMarkup(o){
-  if(o.state==="pending") return `<span class="status status-pending"><span class="pulse-dot"></span>Esperando ejecución</span>`;
-  if(o.state==="api") return `<span class="status status-api"><span class="spinner"></span>API: enviando orden</span>`;
-  if(o.state==="ws") return `<span class="status status-ws-partial"><span class="spinner"></span>WS: en mercado</span>`;
-  if(o.state==="done") return `<span class="status status-done">✓ Ejecutada 100%</span>`;
-  if(o.state==="error") return `<span class="status status-error">✕ Rechazada por ALyC<button class="retry-link" onclick="event.stopPropagation(); retryOrder(${o.id})">Reintentar</button></span>`;
-  return "";
-}
-
-function renderTable(){
-  const filtered = orders.filter(o=>{
-    const c = clientById(o.clientId);
-    const matchesFilter = activeFilter==="todas" || o.action===activeFilter;
-    const q = searchTerm.toLowerCase();
-    const matchesSearch = !q || (c && c.name.toLowerCase().includes(q)) || o.ticker.toLowerCase().includes(q) || o.broker.toLowerCase().includes(q);
-    return matchesFilter && matchesSearch;
-  });
-
-  if(orders.length===0){
-    tableBody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="emoji">◌</div><p>Todavía no armaste ningún lote. Agregá una orden para empezar.</p></div></td></tr>`;
-  } else if(filtered.length===0){
-    tableBody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="emoji">◌</div><p>No hay órdenes que coincidan con la búsqueda.</p></div></td></tr>`;
-  } else {
-    tableBody.innerHTML = filtered.map(o=>{
-      const c = clientById(o.clientId) || { name:"Comitente eliminado", id:o.clientId };
-      const removable = o.state==="pending";
-      return `
-      <tr id="row-${o.id}" class="clickable" tabindex="0" onclick="openModal(${o.id})" onkeydown="if(event.key==='Enter') openModal(${o.id})">
-        <td><div class="client-name">${c.name}</div><div class="client-id">${c.id}</div></td>
-        <td><span class="badge-broker">${o.broker}</span></td>
-        <td><span class="${o.action==='COMPRAR' ? 'tag-buy':'tag-sell'}">${o.action}</span> ${o.qty.toLocaleString('es-AR')} ${o.ticker}</td>
-        <td class="amount">${fmtMoney(o.amount)}</td>
-        <td id="status-${o.id}">${statusMarkup(o)}</td>
-        <td>${removable ? `<button class="row-remove" title="Quitar del lote" onclick="event.stopPropagation(); removeOrder(${o.id})">✕</button>` : ""}</td>
-      </tr>`;
-    }).join("");
-  }
-  updateExecutionMetrics();
-}
-
-function updateExecutionMetrics(){
-  const totalAmount = orders.reduce((sum,o)=>sum+o.amount,0);
-  const uniqueClients = new Set(orders.map(o=>o.clientId)).size;
-  document.getElementById("metricAum").textContent = fmtMoney(totalAmount);
-  document.getElementById("metricAumSub").textContent = `sobre ${uniqueClients} comitente${uniqueClients===1?'':'s'}`;
-  document.getElementById("metricOrders").textContent = orders.length;
-  const btn = document.getElementById("btnExecute");
-  if(!running) btn.disabled = orders.length===0 || orders.every(o=>o.state==="done");
-}
-renderTable();
-
-document.getElementById("searchInput").addEventListener("input", e=>{ searchTerm = e.target.value; renderTable(); });
-document.querySelectorAll(".filter-chip").forEach(chip=>{
-  chip.addEventListener("click", ()=>{
-    document.querySelectorAll(".filter-chip").forEach(c=>c.classList.remove("active"));
-    chip.classList.add("active");
-    activeFilter = chip.dataset.filter;
-    renderTable();
-  });
-});
-
-function renderClients(){
-  const body = document.getElementById("clientsTable");
-  if(clients.length===0){
-    body.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="emoji">◎</div><p>Todavía no hay comitentes cargados.</p></div></td></tr>`;
-  } else {
-    body.innerHTML = clients.map(c=>`
-      <tr>
-        <td><div class="client-name">${c.name}</div><div class="client-id">${c.id}</div></td>
-        <td><span class="badge-broker">${c.broker}</span></td>
-        <td><span class="badge-risk ${c.risk}">${c.risk.charAt(0).toUpperCase()+c.risk.slice(1)}</span></td>
-        <td class="amount">${fmtMoney(c.portfolio)}</td>
-        <td style="color:var(--text-muted);">${c.last}</td>
-        <td><button class="row-remove" title="Quitar comitente" onclick="removeClient('${c.id}')">✕</button></td>
-      </tr>
-    `).join("");
-  }
-  document.getElementById("statTotalClients").textContent = clients.length;
-  document.getElementById("statBrokers").textContent = new Set(clients.map(c=>c.broker)).size;
-  document.getElementById("statPortfolio").textContent = fmtMoney(clients.reduce((s,c)=>s+c.portfolio,0));
-  populateClientSelect();
-}
-
-function removeClient(id){
-  clients = clients.filter(c=>c.id!==id);
-  renderClients();
-  renderTable();
-  pushLog(`Comitente ${id} removido de la base`);
-}
-
-const logBody = document.getElementById("logBody");
-function pushLog(text){
-  const row = document.createElement("div");
-  row.className = "log-row";
-  row.innerHTML = `<span class="log-time">${nowTime()}</span><span>${text}</span>`;
-  logBody.prepend(row);
-  document.getElementById("logCount").textContent = logBody.children.length + " eventos";
-}
-
-function updateProgress(){
-  const done = orders.filter(o=>o.state==="done").length;
-  const total = orders.length || 1;
-  const pct = Math.round((done/total)*100);
-  document.getElementById("progressFill").style.width = pct+"%";
-  document.getElementById("progressCount").textContent = `${done} / ${orders.length} ejecutadas`;
-}
-updateProgress();
-
-const btn = document.getElementById("btnExecute");
-let running = false;
-btn.addEventListener("click", iniciarRebalanceo);
-document.getElementById("btnReset").addEventListener("click", resetSim);
-
-async function iniciarRebalanceo(){
-  if(running || orders.length===0) return;
-  running = true;
-  btn.disabled = true;
-  btn.innerHTML = `<span style="display:flex;align-items:center;gap:8px;"><span class="spinner"></span> Procesando API...</span>`;
-  pushLog(`Iniciando envío en lote vía REST API (${orders.length} órdenes)...`);
-
-  const pendingIds = orders.filter(o=>o.state!=="done").map(o=>o.id);
-  await Promise.all(pendingIds.map(id => simularCicloDeVidaOrden(id)));
-
-  const errores = orders.filter(o=>o.state==="error").length;
-  running = false;
-  if(errores>0){
-    btn.disabled = false;
-    btn.innerHTML = `⚡ Reintentar ${errores} pendiente${errores===1?'':'s'}`;
-    mostrarToast(`⚠ ${errores} orden(es) rechazada(s) — revisá y reintentá`, "warn");
-  } else {
-    btn.disabled = true;
-    btn.innerHTML = "✓ Órdenes completadas";
-    mostrarToast("✓ Rebalanceo ejecutado con éxito", "ok");
-  }
-}
-
-function simularCicloDeVidaOrden(orderId){
-  return new Promise(resolve=>{
-    const order = orders.find(o=>o.id===orderId);
-    if(!order || order.state==="done"){ resolve(); return; }
-    const c = clientById(order.clientId);
-    const clientName = c ? c.name : order.clientId;
-
-    setTimeout(()=>{
-      order.state = "api";
-      renderTable();
-      pushLog(`API: orden #${order.id} (${clientName}) enviada a ${order.broker}`);
-
-      setTimeout(()=>{
-        const shouldFail = !order.error && Math.random() < 0.12;
-        if(shouldFail){
-          order.state = "error";
-          order.error = true;
-          renderTable();
-          pushLog(`WS: orden #${order.id} rechazada por ${order.broker} — fondos insuficientes`);
-          resolve();
-          return;
-        }
-        order.state = "ws";
-        renderTable();
-        pushLog(`WS: orden #${order.id} en mercado, operando`);
-
-        setTimeout(()=>{
-          order.state = "done";
-          renderTable();
-          updateProgress();
-          pushLog(`WS: orden #${order.id} ejecutada 100% — ${order.qty.toLocaleString('es-AR')} ${order.ticker}`);
-          resolve();
-        }, Math.random()*2500 + 1200);
-      }, Math.random()*1300 + 900);
-    }, Math.random()*700 + 200);
-  });
-}
-
-function retryOrder(orderId){
-  const order = orders.find(o=>o.id===orderId);
-  order.state = "pending";
-  renderTable();
-  pushLog(`Reintentando orden #${order.id} manualmente...`);
-  btn.disabled = true;
-  btn.innerHTML = `<span style="display:flex;align-items:center;gap:8px;"><span class="spinner"></span> Reintentando...</span>`;
-  simularCicloDeVidaOrden(orderId).then(()=>{
-    const stillFailing = orders.some(o=>o.state==="error");
-    btn.disabled = stillFailing ? false : true;
-    btn.innerHTML = stillFailing ? "⚡ Reintentar pendientes" : "✓ Órdenes completadas";
-    if(!stillFailing) mostrarToast("✓ Rebalanceo ejecutado con éxito", "ok");
-  });
-}
-
-function removeOrder(orderId){
-  orders = orders.filter(o=>o.id!==orderId);
-  renderTable();
-  updateProgress();
-  pushLog(`Orden #${orderId} quitada del lote`);
-}
-
-function resetSim(){
-  orders.forEach(o => { o.state = "pending"; o.error = false; });
-  running = false;
-  btn.disabled = orders.length===0;
-  btn.innerHTML = "⚡ Ejecutar órdenes";
-  logBody.innerHTML = "";
-  document.getElementById("logCount").textContent = "";
-  renderTable();
-  updateProgress();
-  pushLog("Simulación reiniciada — todas las órdenes vuelven a estado pendiente.");
-}
-
-function mostrarToast(text, type){
-  const toast = document.getElementById("toast");
-  toast.textContent = text;
-  toast.style.background = type==="warn" ? "var(--amber)" : "var(--accent)";
-  toast.classList.add("show");
-  setTimeout(()=>toast.classList.remove("show"), 4200);
-}
-
-const overlay = document.getElementById("modalOverlay");
-function openModal(orderId){
-  const o = orders.find(x=>x.id===orderId);
-  const c = clientById(o.clientId) || { name:"Comitente eliminado", id:o.clientId };
-  document.getElementById("modalTitle").textContent = `Orden #${o.id} — ${o.ticker}`;
-  document.getElementById("modalSub").textContent = `${c.name} · ${c.id}`;
-  document.getElementById("modalBody").innerHTML = `
-    <div class="modal-row"><span>ALyC</span><span>${o.broker}</span></div>
-    <div class="modal-row"><span>Acción</span><span class="${o.action==='COMPRAR'?'tag-buy':'tag-sell'}">${o.action}</span></div>
-    <div class="modal-row"><span>Nominales</span><span>${o.qty.toLocaleString('es-AR')} ${o.ticker}</span></div>
-    <div class="modal-row"><span>Monto</span><span>${fmtMoney(o.amount)}</span></div>
-    <div class="modal-row"><span>Estado</span><span>${statusMarkup(o)}</span></div>
-  `;
-  const cancelBtn = document.getElementById("modalCancelBtn");
-  cancelBtn.style.display = (o.state==="done") ? "none" : "block";
-  cancelBtn.onclick = ()=>{ cancelOrder(o.id); closeModal(); };
-  overlay.classList.add("show");
-}
-function closeModal(){ overlay.classList.remove("show"); }
-document.getElementById("modalClose").addEventListener("click", closeModal);
-document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
-overlay.addEventListener("click", e=>{ if(e.target===overlay) closeModal(); });
-
-function cancelOrder(orderId){
-  const o = orders.find(x=>x.id===orderId);
-  if(!o || o.state==="done") return;
-  o.state = "error";
-  o.error = true;
-  renderTable();
-  pushLog(`Orden #${o.id} cancelada manualmente por el usuario`);
-  mostrarToast("Orden cancelada", "warn");
-}
-
-const orderModal = document.getElementById("orderModalOverlay");
-const ofClient = document.getElementById("ofClient");
-const ofSymbol = document.getElementById("ofSymbol");
-const ofAction = document.getElementById("ofAction");
-const ofQty = document.getElementById("ofQty");
-const ofComputed = document.getElementById("ofComputed");
-const ofPriceHint = document.getElementById("ofPriceHint");
-
-function populateClientSelect(){
-  ofClient.innerHTML = clients.map(c=>`<option value="${c.id}">${c.name} — ${c.broker}</option>`).join("") || `<option value="">Sin comitentes cargados</option>`;
-}
-ofSymbol.innerHTML = SYMBOLS.map(s=>`<option value="${s.ticker}">${s.ticker} — ${s.name}</option>`).join("");
-
-function updateOrderCompute(){
-  const sym = symbolMap[ofSymbol.value];
-  const qty = parseFloat(ofQty.value) || 0;
-  const amount = sym ? sym.price * qty : 0;
-  ofPriceHint.textContent = sym ? `Precio de referencia: ${fmtMoney(sym.price)} por nominal` : "Precio de referencia: —";
-  ofComputed.textContent = fmtMoney(amount);
-}
-[ofSymbol, ofQty].forEach(el => el.addEventListener("input", updateOrderCompute));
-updateOrderCompute();
-
-document.getElementById("btnAddOrder").addEventListener("click", ()=>{
-  if(clients.length===0){
-    switchView("comitentes");
-    mostrarToast("Agregá un comitente antes de crear órdenes", "warn");
-    return;
-  }
-  populateClientSelect();
-  updateOrderCompute();
-  document.getElementById("orderFormError").classList.remove("show");
-  orderModal.classList.add("show");
-});
-document.getElementById("orderModalClose").addEventListener("click", ()=>orderModal.classList.remove("show"));
-document.getElementById("orderCancelBtn").addEventListener("click", ()=>orderModal.classList.remove("show"));
-orderModal.addEventListener("click", e=>{ if(e.target===orderModal) orderModal.classList.remove("show"); });
-
-document.getElementById("orderForm").addEventListener("submit", e=>{
-  e.preventDefault();
-  const clientId = ofClient.value;
-  const sym = symbolMap[ofSymbol.value];
-  const qty = parseInt(ofQty.value, 10);
-  const c = clientById(clientId);
-  if(!c || !sym || !qty || qty<=0){
-    document.getElementById("orderFormError").classList.add("show");
-    return;
-  }
-  const order = {
-    id: nextOrderId++,
-    clientId: c.id,
-    broker: c.broker,
-    action: ofAction.value,
-    ticker: sym.ticker,
-    qty: qty,
-    amount: sym.price * qty,
-    state: "pending",
-    error: false
-  };
-  orders.push(order);
-  orderModal.classList.remove("show");
-  renderTable();
-  updateProgress();
-  pushLog(`Orden #${order.id} agregada al lote — ${order.action} ${qty.toLocaleString('es-AR')} ${sym.ticker} para ${c.name}`);
-  ofQty.value = "";
-  updateOrderCompute();
-});
-
+// Lógica Modales Comitente
 const clientModal = document.getElementById("clientModalOverlay");
-document.getElementById("btnAddClient").addEventListener("click", ()=>{
-  document.getElementById("clientFormError").classList.remove("show");
+document.getElementById("btnAddClient").onclick = () => {
   document.getElementById("clientForm").reset();
   clientModal.classList.add("show");
-});
-document.getElementById("clientModalClose").addEventListener("click", ()=>clientModal.classList.remove("show"));
-document.getElementById("clientCancelBtn").addEventListener("click", ()=>clientModal.classList.remove("show"));
-clientModal.addEventListener("click", e=>{ if(e.target===clientModal) clientModal.classList.remove("show"); });
+};
 
-document.getElementById("clientForm").addEventListener("submit", e=>{
+document.getElementById("clientForm").addEventListener("submit", (e) => {
   e.preventDefault();
-  const name = document.getElementById("cfName").value.trim();
-  const broker = document.getElementById("cfBroker").value;
-  const risk = document.getElementById("cfRisk").value;
-  const portfolio = parseFloat(document.getElementById("cfPortfolio").value);
-  if(!name || !broker || !risk || !portfolio || portfolio<=0){
-    document.getElementById("clientFormError").classList.add("show");
-    return;
-  }
-  const client = { id:"#"+(nextClientNum++), name, broker, risk, portfolio, last:"recién agregado" };
-  clients.push(client);
+  const newClient = {
+    id: "#" + (nextClientNum++),
+    name: document.getElementById("cfName").value,
+    broker: document.getElementById("cfBroker").value,
+    risk: document.getElementById("cfRisk").value,
+    portfolio: parseFloat(document.getElementById("cfPortfolio").value)
+  };
+  clients.push(newClient);
   clientModal.classList.remove("show");
   renderClients();
-  pushLog(`Comitente ${client.name} (${client.id}) agregado — ${broker}, perfil ${risk}`);
-  mostrarToast(`Comitente ${client.name} agregado`, "ok");
+  showToast(`Comitente ${newClient.name} agregado correctamente.`);
 });
 
-document.addEventListener("keydown", e=>{
-  if(e.key==="Escape"){
-    closeModal();
-    orderModal.classList.remove("show");
-    clientModal.classList.remove("show");
-  }
-});
+document.getElementById("clientModalClose").onclick = () => clientModal.classList.remove("show");
+document.getElementById("clientCancelBtn").onclick = () => clientModal.classList.remove("show");
 
+// --- UTILIDADES ---
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.innerText = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 3000);
+}
+
+// Inicializar
+renderAlycs();
 renderClients();
 </script>
 </body>
