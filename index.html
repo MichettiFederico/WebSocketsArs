@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rebalancia - Simulador de Ejecución</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #0f172a; --bg-card: #1e293b; --bg-card-hover: #334155;
+            --border: #334155; --text-main: #f8fafc; --text-muted: #94a3b8;
+            --accent-green: #10b981; --accent-blue: #3b82f6; 
+            --accent-yellow: #f59e0b; --accent-red: #ef4444;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; font-size: 14px; }
+        
+        /* Layout */
+        aside { width: 240px; background: #090d16; border-right: 1px solid var(--border); padding: 20px 16px; display: flex; flex-direction: column; justify-content: space-between; }
+        main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        header { background: #090d16; border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Sidebar Elements */
+        .brand { font-size: 1.25rem; font-weight: 700; margin-bottom: 32px; }
+        .brand span { color: var(--accent-green); }
+        .nav-item { padding: 10px 12px; color: var(--text-muted); border-radius: 6px; font-weight: 500; cursor: pointer; margin-bottom: 4px; }
+        .nav-item.active { background: var(--bg-card); color: var(--text-main); border-left: 3px solid var(--accent-green); }
+        
+        /* Buttons & Workspace */
+        .workspace { padding: 32px; display: flex; flex-direction: column; gap: 24px; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; }
+        .btn-primary { background: var(--accent-green); color: #000; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 14px; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        /* Summary Card */
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .metric-label { color: var(--text-muted); font-size: 12px; margin-bottom: 4px; font-weight: 600; }
+        .metric-value { font-size: 1.25rem; font-weight: 700; }
+        
+        /* Table */
+        .table-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); padding: 14px 20px; font-size: 12px; border-bottom: 1px solid var(--border); }
+        td { padding: 16px 20px; border-bottom: 1px solid var(--border); font-size: 13px; }
+        tr:hover td { background: var(--bg-card-hover); }
+        
+        /* Badges */
+        .badge-broker { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: #0f172a; border: 1px solid var(--border); }
+        .tag-buy { color: var(--accent-green); font-weight: 700; }
+        .tag-sell { color: var(--accent-red); font-weight: 700; }
+        
+        /* Status Animations */
+        .status { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 12px; }
+        .status-pending { color: var(--text-muted); }
+        .status-api { color: var(--accent-blue); }
+        .status-ws-partial { color: var(--accent-yellow); }
+        .status-done { color: var(--accent-green); }
+        
+        .spinner { width: 12px; height: 12px; border: 2px solid transparent; border-top-color: currentColor; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Toast */
+        #toast { position: fixed; bottom: 20px; right: 20px; background: var(--accent-green); color: #000; padding: 16px 24px; border-radius: 8px; font-weight: 700; transform: translateY(100px); opacity: 0; transition: all 0.3s ease; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        #toast.show { transform: translateY(0); opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <aside>
+        <div>
+            <div class="brand">Rebalancia<span>.io</span></div>
+            <div class="nav-item">📊 Dashboard</div>
+            <div class="nav-item active">⚡ Ejecución (Simulador)</div>
+            <div class="nav-item">👥 Comitentes</div>
+        </div>
+    </aside>
+
+    <main>
+        <header>
+            <div style="color: var(--text-muted); font-weight: 500;">Conexión API REST + WebSockets</div>
+            <div style="display: flex; gap: 12px; font-size: 12px;">
+                <span style="color: var(--accent-green);">● IOL API Online</span>
+                <span style="color: var(--accent-green);">● PPI API Online</span>
+            </div>
+        </header>
+
+        <div class="workspace">
+            <div class="page-header">
+                <div>
+                    <h1 style="font-size: 1.5rem; margin-bottom: 4px;">Rebalanceo en Lote</h1>
+                    <p style="color: var(--text-muted);">Modelo: Conservador ARS (Soberanos + LECAPs)</p>
+                </div>
+                <button id="btnExecute" class="btn-primary" onclick="iniciarRebalanceo()">
+                    ⚡ Ejecutar 4 Órdenes
+                </button>
+            </div>
+
+            <div class="card">
+                <div><div class="metric-label">AUM IMPACTADO</div><div class="metric-value">$ 25.688.000</div></div>
+                <div><div class="metric-label">CUENTAS</div><div class="metric-value">4 Comitentes</div></div>
+                <div><div class="metric-label">TIPO DE ENVÍO</div><div class="metric-value" style="color: var(--accent-blue);">REST Batch</div></div>
+                <div><div class="metric-label">MONITOREO</div><div class="metric-value" style="color: var(--accent-yellow);">WebSockets</div></div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>COMITENTE</th>
+                            <th>ALYC</th>
+                            <th>ACCIÓN</th>
+                            <th>MONTO</th>
+                            <th>ESTADO EN VIVO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTable">
+                        <!-- Las filas se inyectan vía JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast">✅ ¡Rebalanceo ejecutado con éxito!</div>
+
+    <script>
+        // 1. Base de datos simulada de órdenes generadas por el algoritmo
+        const orders = [
+            { id: 1, client: "#10492 - Perez J.C.", broker: "PPI", action: "COMPRAR", ticker: "AL30", qty: "1.800", amount: "$ 1.188.000" },
+            { id: 2, client: "#88210 - Inv. Sur", broker: "BALANZ", action: "VENDER", ticker: "T2X4", qty: "12.000", amount: "$ 14.100.000" },
+            { id: 3, client: "#45912 - Gómez M.", broker: "IOL", action: "COMPRAR", ticker: "S31O4", qty: "350", amount: "$ 385.000" },
+            { id: 4, client: "#12093 - Fund. Pampa", broker: "PPI", action: "COMPRAR", ticker: "AL30", qty: "10.500", amount: "$ 6.930.000" }
+        ];
+
+        // 2. Renderizar la tabla inicial
+        const tableBody = document.getElementById('ordersTable');
+        
+        function renderTable() {
+            tableBody.innerHTML = orders.map(order => `
+                <tr id="row-${order.id}">
+                    <td><strong>${order.client}</strong></td>
+                    <td><span class="badge-broker">${order.broker}</span></td>
+                    <td>
+                        <span class="${order.action === 'COMPRAR' ? 'tag-buy' : 'tag-sell'}">${order.action}</span> 
+                        ${order.qty} ${order.ticker}
+                    </td>
+                    <td>${order.amount}</td>
+                    <td id="status-${order.id}">
+                        <span class="status status-pending">Esperando ejecución...</span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 3. Lógica de Simulación API + WebSockets
+        async function iniciarRebalanceo() {
+            const btn = document.getElementById('btnExecute');
+            btn.disabled = true;
+            btn.innerHTML = '<div style="display:flex; align-items:center; gap:8px"><div class="spinner"></div> Procesando API...</div>';
+
+            // Promesas para esperar que todas las órdenes terminen
+            const procesos = orders.map(order => simularCicloDeVidaOrden(order.id));
+            
+            await Promise.all(procesos); // Espera que todas las WebSockets terminen
+
+            btn.innerHTML = '✅ Órdenes Completadas';
+            mostrarToast();
+        }
+
+        function simularCicloDeVidaOrden(orderId) {
+            return new Promise(resolve => {
+                const statusCell = document.getElementById(`status-${orderId}`);
+                
+                // PASO 1: Envío vía API REST (Demora entre 200ms y 800ms)
+                setTimeout(() => {
+                    statusCell.innerHTML = `<span class="status status-api"><div class="spinner"></div> API: Enviando orden...</span>`;
+                    
+                    // PASO 2: Confirmación del broker y llegada al mercado (Websocket evento 1)
+                    setTimeout(() => {
+                        statusCell.innerHTML = `<span class="status status-ws-partial"><div class="spinner"></div> WS: En mercado (Operando)</span>`;
+                        
+                        // PASO 3: Ejecución final de la orden (Websocket evento 2)
+                        setTimeout(() => {
+                            statusCell.innerHTML = `<span class="status status-done">✓ Ejecutada 100%</span>`;
+                            resolve(); // Termina el proceso para esta orden
+                        }, Math.random() * 3000 + 1500); // Demora aleatoria 1.5 a 4.5 seg
+
+                    }, Math.random() * 1500 + 1000); 
+
+                }, Math.random() * 800 + 200);
+            });
+        }
+
+        function mostrarToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        // Iniciar
+        renderTable();
+    </script>
+</body>
+</html>
