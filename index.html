@@ -1,204 +1,654 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rebalancia - Simulador de Ejecución</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-body: #0f172a; --bg-card: #1e293b; --bg-card-hover: #334155;
-            --border: #334155; --text-main: #f8fafc; --text-muted: #94a3b8;
-            --accent-green: #10b981; --accent-blue: #3b82f6; 
-            --accent-yellow: #f59e0b; --accent-red: #ef4444;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; font-size: 14px; }
-        
-        /* Layout */
-        aside { width: 240px; background: #090d16; border-right: 1px solid var(--border); padding: 20px 16px; display: flex; flex-direction: column; justify-content: space-between; }
-        main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
-        header { background: #090d16; border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; }
-        
-        /* Sidebar Elements */
-        .brand { font-size: 1.25rem; font-weight: 700; margin-bottom: 32px; }
-        .brand span { color: var(--accent-green); }
-        .nav-item { padding: 10px 12px; color: var(--text-muted); border-radius: 6px; font-weight: 500; cursor: pointer; margin-bottom: 4px; }
-        .nav-item.active { background: var(--bg-card); color: var(--text-main); border-left: 3px solid var(--accent-green); }
-        
-        /* Buttons & Workspace */
-        .workspace { padding: 32px; display: flex; flex-direction: column; gap: 24px; max-width: 1200px; margin: 0 auto; width: 100%; }
-        .page-header { display: flex; justify-content: space-between; align-items: center; }
-        .btn-primary { background: var(--accent-green); color: #000; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 14px; }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        /* Summary Card */
-        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-        .metric-label { color: var(--text-muted); font-size: 12px; margin-bottom: 4px; font-weight: 600; }
-        .metric-value { font-size: 1.25rem; font-weight: 700; }
-        
-        /* Table */
-        .table-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { background: rgba(15, 23, 42, 0.5); color: var(--text-muted); padding: 14px 20px; font-size: 12px; border-bottom: 1px solid var(--border); }
-        td { padding: 16px 20px; border-bottom: 1px solid var(--border); font-size: 13px; }
-        tr:hover td { background: var(--bg-card-hover); }
-        
-        /* Badges */
-        .badge-broker { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: #0f172a; border: 1px solid var(--border); }
-        .tag-buy { color: var(--accent-green); font-weight: 700; }
-        .tag-sell { color: var(--accent-red); font-weight: 700; }
-        
-        /* Status Animations */
-        .status { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 12px; }
-        .status-pending { color: var(--text-muted); }
-        .status-api { color: var(--accent-blue); }
-        .status-ws-partial { color: var(--accent-yellow); }
-        .status-done { color: var(--accent-green); }
-        
-        .spinner { width: 12px; height: 12px; border: 2px solid transparent; border-top-color: currentColor; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rebalancia.io — Simulador de Ejecución</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-body:#0b1220; --bg-panel:#111b2e; --bg-card:#152238; --bg-card-hover:#1c2d4a;
+  --border:#243755; --border-soft:#1a2740;
+  --text-main:#eef2f8; --text-muted:#8091ac; --text-dim:#4d6182;
+  --accent:#22c58b; --accent-dim:#1a9b6e; --blue:#4c8dff; --amber:#f5a524; --red:#f2495c;
+  --mono:'JetBrains Mono', monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Inter',sans-serif; background:var(--bg-body); color:var(--text-main);
+  display:flex; height:100vh; overflow:hidden; font-size:14px; -webkit-font-smoothing:antialiased;
+}
+@media (prefers-reduced-motion: reduce){ *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;} }
 
-        /* Toast */
-        #toast { position: fixed; bottom: 20px; right: 20px; background: var(--accent-green); color: #000; padding: 16px 24px; border-radius: 8px; font-weight: 700; transform: translateY(100px); opacity: 0; transition: all 0.3s ease; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        #toast.show { transform: translateY(0); opacity: 1; }
-    </style>
+/* ---------- Sidebar ---------- */
+aside{width:224px; background:#070c16; border-right:1px solid var(--border-soft); padding:24px 14px; display:flex; flex-direction:column; justify-content:space-between; flex-shrink:0;}
+.brand{display:flex; align-items:center; gap:9px; padding:0 8px 28px; }
+.brand-mark{width:26px; height:26px; border-radius:7px; background:linear-gradient(155deg,var(--accent),#0e6b48); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; color:#04120c; flex-shrink:0;}
+.brand-name{font-size:15px; font-weight:700; letter-spacing:-0.01em;}
+.brand-name em{font-style:normal; color:var(--text-dim); font-weight:500;}
+nav{display:flex; flex-direction:column; gap:2px;}
+.nav-item{padding:9px 12px; color:var(--text-muted); border-radius:7px; font-weight:500; cursor:pointer; display:flex; align-items:center; gap:10px; border-left:2px solid transparent; transition:background .15s, color .15s;}
+.nav-item:hover{background:#0e1729; color:var(--text-main);}
+.nav-item.active{background:var(--bg-card); color:var(--text-main); border-left-color:var(--accent);}
+.nav-icon{width:16px; text-align:center; opacity:.85;}
+.sidebar-foot{padding:0 8px; display:flex; flex-direction:column; gap:10px;}
+.env-pill{font-family:var(--mono); font-size:10.5px; color:var(--text-dim); background:#0e1729; border:1px solid var(--border-soft); border-radius:5px; padding:6px 9px; text-align:center;}
+.user-chip{display:flex; align-items:center; gap:9px; padding:8px; border-radius:8px; background:#0e1729;}
+.user-avatar{width:26px; height:26px; border-radius:50%; background:#2a3a58; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--text-muted);}
+.user-meta{line-height:1.25;}
+.user-name{font-size:12px; font-weight:600;}
+.user-role{font-size:11px; color:var(--text-dim);}
+
+/* ---------- Main ---------- */
+main{flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0;}
+header{background:#070c16; border-bottom:1px solid var(--border-soft); padding:14px 30px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0;}
+.conn-label{color:var(--text-muted); font-weight:500; font-size:13px;}
+.conn-status{display:flex; gap:16px; font-family:var(--mono); font-size:11.5px;}
+.dot{width:6px; height:6px; border-radius:50%; background:var(--accent); display:inline-block; margin-right:6px; box-shadow:0 0 0 3px rgba(34,197,139,.15);}
+.conn-status span{color:var(--text-muted); display:flex; align-items:center;}
+
+.view{display:none; overflow-y:auto; flex:1;}
+.view.active{display:block;}
+.workspace{padding:30px; display:flex; flex-direction:column; gap:22px; max-width:1180px; margin:0 auto; width:100%;}
+
+.page-header{display:flex; justify-content:space-between; align-items:flex-end; gap:20px; flex-wrap:wrap;}
+.page-header h1{font-size:1.4rem; font-weight:700; letter-spacing:-0.01em; margin-bottom:4px;}
+.page-header p{color:var(--text-muted); font-size:13px;}
+
+.btn{border:none; padding:10px 18px; border-radius:7px; font-weight:600; cursor:pointer; font-size:13.5px; font-family:'Inter',sans-serif; transition:filter .15s, transform .1s;}
+.btn:active{transform:translateY(1px);}
+.btn-primary{background:var(--accent); color:#04150e;}
+.btn-primary:hover{filter:brightness(1.08);}
+.btn-primary:disabled{opacity:.45; cursor:not-allowed; filter:none;}
+.btn-ghost{background:transparent; border:1px solid var(--border); color:var(--text-muted);}
+.btn-ghost:hover{color:var(--text-main); border-color:#3a5075;}
+.btn-sm{padding:5px 11px; font-size:12px; border-radius:6px;}
+.btn-danger-outline{background:transparent; border:1px solid rgba(242,73,92,.4); color:var(--red);}
+.btn-danger-outline:hover{background:rgba(242,73,92,.08);}
+
+/* ---------- Summary cards ---------- */
+.card-row{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+.metric-card{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:10px; padding:16px 18px;}
+.metric-label{color:var(--text-dim); font-size:11.5px; margin-bottom:6px; font-weight:600;}
+.metric-value{font-size:1.3rem; font-weight:700; letter-spacing:-0.01em;}
+.metric-sub{font-size:11.5px; color:var(--text-muted); margin-top:3px;}
+
+/* ---------- Progress ---------- */
+.progress-wrap{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:10px; padding:16px 18px; display:flex; align-items:center; gap:16px;}
+.progress-track{flex:1; height:7px; border-radius:99px; background:#0e1729; overflow:hidden;}
+.progress-fill{height:100%; width:0%; background:linear-gradient(90deg,var(--accent-dim),var(--accent)); border-radius:99px; transition:width .5s ease;}
+.progress-count{font-family:var(--mono); font-size:12.5px; color:var(--text-muted); white-space:nowrap;}
+
+/* ---------- Toolbar ---------- */
+.toolbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+.search-box{flex:1; min-width:180px; display:flex; align-items:center; gap:8px; background:var(--bg-card); border:1px solid var(--border-soft); border-radius:7px; padding:8px 12px;}
+.search-box input{background:transparent; border:none; outline:none; color:var(--text-main); font-size:13px; width:100%;}
+.search-box input::placeholder{color:var(--text-dim);}
+.filter-chip{background:var(--bg-card); border:1px solid var(--border-soft); color:var(--text-muted); padding:8px 13px; border-radius:7px; font-size:12.5px; font-weight:500; cursor:pointer; white-space:nowrap; transition:.15s;}
+.filter-chip.active{border-color:var(--accent); color:var(--accent); background:rgba(34,197,139,.08);}
+.filter-chip:hover{color:var(--text-main);}
+
+/* ---------- Table ---------- */
+.table-container{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:10px; overflow:hidden;}
+table{width:100%; border-collapse:collapse; text-align:left;}
+th{background:#0e1729; color:var(--text-dim); padding:11px 18px; font-size:11px; font-weight:600; letter-spacing:.02em; border-bottom:1px solid var(--border-soft);}
+td{padding:13px 18px; border-bottom:1px solid var(--border-soft); font-size:13px; vertical-align:middle;}
+tbody tr{cursor:pointer; transition:background .12s;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:var(--bg-card-hover);}
+.client-name{font-weight:600;}
+.client-id{color:var(--text-dim); font-size:11.5px; font-family:var(--mono);}
+.badge-broker{padding:3px 8px; border-radius:5px; font-size:10.5px; font-weight:600; background:#0e1729; border:1px solid var(--border-soft); color:var(--text-muted); font-family:var(--mono);}
+.tag-buy{color:var(--accent); font-weight:700;}
+.tag-sell{color:var(--red); font-weight:700;}
+.amount{font-family:var(--mono); font-variant-numeric:tabular-nums;}
+
+.status{display:inline-flex; align-items:center; gap:7px; font-weight:600; font-size:12px;}
+.status-pending{color:var(--text-dim);}
+.status-api{color:var(--blue);}
+.status-ws-partial{color:var(--amber);}
+.status-done{color:var(--accent);}
+.status-error{color:var(--red);}
+.spinner{width:11px; height:11px; border:2px solid transparent; border-top-color:currentColor; border-radius:50%; animation:spin .8s linear infinite;}
+@keyframes spin{100%{transform:rotate(360deg);}}
+.pulse-dot{width:6px; height:6px; border-radius:50%; background:currentColor; animation:pulse 1.4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+.retry-link{background:none; border:none; color:var(--red); text-decoration:underline; font-size:11.5px; cursor:pointer; font-weight:600; margin-left:4px;}
+
+/* ---------- Log panel ---------- */
+.log-panel{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:10px; padding:0; overflow:hidden;}
+.log-head{padding:12px 18px; border-bottom:1px solid var(--border-soft); font-weight:600; font-size:12.5px; color:var(--text-muted); display:flex; justify-content:space-between; align-items:center;}
+.log-body{max-height:180px; overflow-y:auto; padding:6px 0;}
+.log-body:empty::after{content:'Sin eventos todavía. Iniciá el rebalanceo para ver la actividad en vivo.'; display:block; padding:20px 18px; color:var(--text-dim); font-size:12.5px;}
+.log-row{padding:6px 18px; font-family:var(--mono); font-size:11.5px; color:var(--text-muted); display:flex; gap:10px; animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(-2px);}to{opacity:1; transform:translateY(0);}}
+.log-time{color:var(--text-dim); flex-shrink:0;}
+
+/* ---------- Comitentes view ---------- */
+.stats-strip{display:flex; gap:14px; flex-wrap:wrap;}
+.stat-pill{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:9px; padding:12px 16px; flex:1; min-width:140px;}
+.stat-pill .metric-value{font-size:1.1rem;}
+
+/* ---------- Dashboard view ---------- */
+.dash-grid{display:grid; grid-template-columns:1.4fr 1fr; gap:16px;}
+.panel{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:10px; padding:18px 20px;}
+.panel h3{font-size:13px; font-weight:600; margin-bottom:14px; color:var(--text-main);}
+.bar-row{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+.bar-label{width:80px; font-size:12px; color:var(--text-muted); flex-shrink:0;}
+.bar-track{flex:1; height:8px; background:#0e1729; border-radius:99px; overflow:hidden;}
+.bar-fill{height:100%; border-radius:99px;}
+.bar-val{width:52px; text-align:right; font-family:var(--mono); font-size:11.5px; color:var(--text-muted);}
+.activity-item{display:flex; gap:10px; padding:9px 0; border-bottom:1px solid var(--border-soft); font-size:12.5px;}
+.activity-item:last-child{border-bottom:none;}
+.activity-dot{width:6px; height:6px; border-radius:50%; margin-top:5px; flex-shrink:0;}
+.activity-text{color:var(--text-muted); line-height:1.4;}
+.activity-text strong{color:var(--text-main); font-weight:600;}
+
+/* ---------- Empty state ---------- */
+.empty-state{text-align:center; padding:50px 20px; color:var(--text-dim);}
+.empty-state .emoji{font-size:28px; margin-bottom:10px; opacity:.6;}
+.empty-state p{font-size:13px;}
+
+/* ---------- Modal ---------- */
+.modal-overlay{position:fixed; inset:0; background:rgba(4,8,16,.65); backdrop-filter:blur(2px); display:none; align-items:center; justify-content:center; z-index:50; animation:fadeIn .15s ease;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--bg-panel); border:1px solid var(--border); border-radius:12px; width:420px; max-width:92vw; padding:24px; box-shadow:0 20px 50px rgba(0,0,0,.4);}
+.modal h2{font-size:1.05rem; margin-bottom:4px;}
+.modal .modal-sub{color:var(--text-muted); font-size:12.5px; margin-bottom:18px;}
+.modal-row{display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--border-soft); font-size:13px;}
+.modal-row:last-child{border-bottom:none;}
+.modal-row span:first-child{color:var(--text-muted);}
+.modal-row span:last-child{font-weight:600; font-family:var(--mono);}
+.modal-actions{display:flex; gap:10px; margin-top:20px;}
+.modal-close{position:absolute; top:16px; right:16px; background:none; border:none; color:var(--text-dim); font-size:18px; cursor:pointer;}
+.modal{position:relative;}
+
+/* ---------- Toast ---------- */
+#toast{position:fixed; bottom:22px; right:22px; background:var(--accent); color:#04150e; padding:14px 20px; border-radius:9px; font-weight:700; font-size:13px; display:flex; align-items:center; gap:10px; transform:translateY(90px); opacity:0; transition:all .3s cubic-bezier(.2,.8,.2,1); box-shadow:0 14px 30px rgba(0,0,0,.35); z-index:60;}
+#toast.show{transform:translateY(0); opacity:1;}
+
+/* Focus visibility */
+button:focus-visible, input:focus-visible, .nav-item:focus-visible, tr:focus-visible{outline:2px solid var(--blue); outline-offset:2px;}
+
+/* Scrollbars */
+::-webkit-scrollbar{width:9px; height:9px;}
+::-webkit-scrollbar-thumb{background:#233250; border-radius:99px;}
+::-webkit-scrollbar-track{background:transparent;}
+
+/* Responsive */
+@media (max-width:920px){
+  aside{position:fixed; left:-224px; z-index:40; height:100vh; transition:left .2s;}
+  .card-row{grid-template-columns:repeat(2,1fr);}
+  .dash-grid{grid-template-columns:1fr;}
+  header{padding:14px 18px;}
+  .workspace{padding:18px;}
+  table{font-size:12px;}
+  th,td{padding:10px 12px;}
+}
+</style>
 </head>
 <body>
 
-    <aside>
+<aside id="sidebar">
+  <div>
+    <div class="brand">
+      <div class="brand-mark">R</div>
+      <div class="brand-name">Rebalancia<em>.io</em></div>
+    </div>
+    <nav>
+      <div class="nav-item" data-view="dashboard" tabindex="0">
+        <span class="nav-icon">◇</span> Dashboard
+      </div>
+      <div class="nav-item active" data-view="ejecucion" tabindex="0">
+        <span class="nav-icon">⚡</span> Ejecución
+      </div>
+      <div class="nav-item" data-view="comitentes" tabindex="0">
+        <span class="nav-icon">◎</span> Comitentes
+      </div>
+    </nav>
+  </div>
+  <div class="sidebar-foot">
+    <div class="env-pill">MODO SIMULACIÓN</div>
+    <div class="user-chip">
+      <div class="user-avatar">FM</div>
+      <div class="user-meta">
+        <div class="user-name">Federico M.</div>
+        <div class="user-role">Asesor de cartera</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<main>
+  <header>
+    <div class="conn-label">Conexión API REST + WebSockets</div>
+    <div class="conn-status">
+      <span><span class="dot"></span>IOL API</span>
+      <span><span class="dot"></span>PPI API</span>
+      <span><span class="dot"></span>Balanz API</span>
+    </div>
+  </header>
+
+  <!-- ===================== VISTA: EJECUCIÓN ===================== -->
+  <section class="view active" id="view-ejecucion">
+    <div class="workspace">
+      <div class="page-header">
         <div>
-            <div class="brand">Rebalancia<span>.io</span></div>
-            <div class="nav-item">📊 Dashboard</div>
-            <div class="nav-item active">⚡ Ejecución (Simulador)</div>
-            <div class="nav-item">👥 Comitentes</div>
+          <h1>Rebalanceo en lote</h1>
+          <p>Modelo: Conservador ARS (Soberanos + LECAPs) · generado hace 6 min</p>
         </div>
-    </aside>
-
-    <main>
-        <header>
-            <div style="color: var(--text-muted); font-weight: 500;">Conexión API REST + WebSockets</div>
-            <div style="display: flex; gap: 12px; font-size: 12px;">
-                <span style="color: var(--accent-green);">● IOL API Online</span>
-                <span style="color: var(--accent-green);">● PPI API Online</span>
-            </div>
-        </header>
-
-        <div class="workspace">
-            <div class="page-header">
-                <div>
-                    <h1 style="font-size: 1.5rem; margin-bottom: 4px;">Rebalanceo en Lote</h1>
-                    <p style="color: var(--text-muted);">Modelo: Conservador ARS (Soberanos + LECAPs)</p>
-                </div>
-                <button id="btnExecute" class="btn-primary" onclick="iniciarRebalanceo()">
-                    ⚡ Ejecutar 4 Órdenes
-                </button>
-            </div>
-
-            <div class="card">
-                <div><div class="metric-label">AUM IMPACTADO</div><div class="metric-value">$ 25.688.000</div></div>
-                <div><div class="metric-label">CUENTAS</div><div class="metric-value">4 Comitentes</div></div>
-                <div><div class="metric-label">TIPO DE ENVÍO</div><div class="metric-value" style="color: var(--accent-blue);">REST Batch</div></div>
-                <div><div class="metric-label">MONITOREO</div><div class="metric-value" style="color: var(--accent-yellow);">WebSockets</div></div>
-            </div>
-
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>COMITENTE</th>
-                            <th>ALYC</th>
-                            <th>ACCIÓN</th>
-                            <th>MONTO</th>
-                            <th>ESTADO EN VIVO</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ordersTable">
-                        <!-- Las filas se inyectan vía JS -->
-                    </tbody>
-                </table>
-            </div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-ghost" id="btnReset">↺ Reiniciar simulación</button>
+          <button id="btnExecute" class="btn btn-primary">⚡ Ejecutar 4 órdenes</button>
         </div>
-    </main>
+      </div>
 
-    <div id="toast">✅ ¡Rebalanceo ejecutado con éxito!</div>
+      <div class="card-row">
+        <div class="metric-card">
+          <div class="metric-label">AUM IMPACTADO</div>
+          <div class="metric-value">$ 25.688.000</div>
+          <div class="metric-sub">sobre 4 comitentes</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">CUENTAS</div>
+          <div class="metric-value">4 comitentes</div>
+          <div class="metric-sub">3 ALyCs distintas</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">TIPO DE ENVÍO</div>
+          <div class="metric-value" style="color:var(--blue);">REST Batch</div>
+          <div class="metric-sub">envío secuenciado</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">MONITOREO</div>
+          <div class="metric-value" style="color:var(--amber);">WebSockets</div>
+          <div class="metric-sub">estado en vivo por orden</div>
+        </div>
+      </div>
 
-    <script>
-        // 1. Base de datos simulada de órdenes generadas por el algoritmo
-        const orders = [
-            { id: 1, client: "#10492 - Perez J.C.", broker: "PPI", action: "COMPRAR", ticker: "AL30", qty: "1.800", amount: "$ 1.188.000" },
-            { id: 2, client: "#88210 - Inv. Sur", broker: "BALANZ", action: "VENDER", ticker: "T2X4", qty: "12.000", amount: "$ 14.100.000" },
-            { id: 3, client: "#45912 - Gómez M.", broker: "IOL", action: "COMPRAR", ticker: "S31O4", qty: "350", amount: "$ 385.000" },
-            { id: 4, client: "#12093 - Fund. Pampa", broker: "PPI", action: "COMPRAR", ticker: "AL30", qty: "10.500", amount: "$ 6.930.000" }
-        ];
+      <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-count" id="progressCount">0 / 4 ejecutadas</div>
+      </div>
 
-        // 2. Renderizar la tabla inicial
-        const tableBody = document.getElementById('ordersTable');
-        
-        function renderTable() {
-            tableBody.innerHTML = orders.map(order => `
-                <tr id="row-${order.id}">
-                    <td><strong>${order.client}</strong></td>
-                    <td><span class="badge-broker">${order.broker}</span></td>
-                    <td>
-                        <span class="${order.action === 'COMPRAR' ? 'tag-buy' : 'tag-sell'}">${order.action}</span> 
-                        ${order.qty} ${order.ticker}
-                    </td>
-                    <td>${order.amount}</td>
-                    <td id="status-${order.id}">
-                        <span class="status status-pending">Esperando ejecución...</span>
-                    </td>
-                </tr>
-            `).join('');
+      <div class="toolbar">
+        <div class="search-box">
+          <span style="color:var(--text-dim);">⌕</span>
+          <input type="text" id="searchInput" placeholder="Buscar por comitente, ticker o ALyC...">
+        </div>
+        <button class="filter-chip active" data-filter="todas">Todas</button>
+        <button class="filter-chip" data-filter="COMPRAR">Compras</button>
+        <button class="filter-chip" data-filter="VENDER">Ventas</button>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Comitente</th>
+              <th>ALyC</th>
+              <th>Acción</th>
+              <th>Monto</th>
+              <th>Estado en vivo</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTable"></tbody>
+        </table>
+      </div>
+
+      <div class="log-panel">
+        <div class="log-head">
+          <span>Actividad en vivo</span>
+          <span id="logCount" style="font-family:var(--mono); font-weight:400; color:var(--text-dim);"></span>
+        </div>
+        <div class="log-body" id="logBody"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== VISTA: DASHBOARD ===================== -->
+  <section class="view" id="view-dashboard">
+    <div class="workspace">
+      <div class="page-header">
+        <div>
+          <h1>Dashboard</h1>
+          <p>Actividad de rebalanceo de los últimos 7 días</p>
+        </div>
+      </div>
+
+      <div class="card-row">
+        <div class="metric-card">
+          <div class="metric-label">ÓRDENES EJECUTADAS</div>
+          <div class="metric-value">128</div>
+          <div class="metric-sub">últimos 7 días</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">TASA DE ÉXITO</div>
+          <div class="metric-value" style="color:var(--accent);">96,1%</div>
+          <div class="metric-sub">5 reintentos exitosos</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">TIEMPO PROMEDIO</div>
+          <div class="metric-value">3,4 s</div>
+          <div class="metric-sub">envío → confirmación</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">AUM BAJO GESTIÓN</div>
+          <div class="metric-value">$ 412 M</div>
+          <div class="metric-sub">62 comitentes activos</div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="panel">
+          <h3>Volumen por ALyC (7 días)</h3>
+          <div class="bar-row"><div class="bar-label">PPI</div><div class="bar-track"><div class="bar-fill" style="width:82%; background:var(--accent);"></div></div><div class="bar-val">$ 168M</div></div>
+          <div class="bar-row"><div class="bar-label">Balanz</div><div class="bar-track"><div class="bar-fill" style="width:58%; background:var(--blue);"></div></div><div class="bar-val">$ 119M</div></div>
+          <div class="bar-row"><div class="bar-label">IOL</div><div class="bar-track"><div class="bar-fill" style="width:46%; background:var(--amber);"></div></div><div class="bar-val">$ 94M</div></div>
+          <div class="bar-row"><div class="bar-label">Cocos</div><div class="bar-track"><div class="bar-fill" style="width:15%; background:var(--text-dim);"></div></div><div class="bar-val">$ 31M</div></div>
+        </div>
+        <div class="panel">
+          <h3>Últimos eventos</h3>
+          <div class="activity-item"><div class="activity-dot" style="background:var(--accent);"></div><div class="activity-text"><strong>Lote #204</strong> ejecutado 100% · 4 órdenes · hace 6 min</div></div>
+          <div class="activity-item"><div class="activity-dot" style="background:var(--blue);"></div><div class="activity-text">Nuevo modelo <strong>Conservador ARS</strong> publicado · hace 2 h</div></div>
+          <div class="activity-item"><div class="activity-dot" style="background:var(--amber);"></div><div class="activity-text">Reintento en orden <strong>#88210</strong> tras rechazo de ALyC · hace 5 h</div></div>
+          <div class="activity-item"><div class="activity-dot" style="background:var(--accent);"></div><div class="activity-text"><strong>Lote #203</strong> ejecutado 100% · 12 órdenes · ayer</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== VISTA: COMITENTES ===================== -->
+  <section class="view" id="view-comitentes">
+    <div class="workspace">
+      <div class="page-header">
+        <div>
+          <h1>Comitentes</h1>
+          <p>Cuentas incluidas en el rebalanceo activo</p>
+        </div>
+      </div>
+
+      <div class="stats-strip">
+        <div class="stat-pill"><div class="metric-label">TOTAL COMITENTES</div><div class="metric-value">4</div></div>
+        <div class="stat-pill"><div class="metric-label">ALyCs INVOLUCRADAS</div><div class="metric-value">3</div></div>
+        <div class="stat-pill"><div class="metric-label">TICKET PROMEDIO</div><div class="metric-value">$ 6,4 M</div></div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr><th>Comitente</th><th>ALyC</th><th>Cartera actual</th><th>Desvío vs. modelo</th><th>Última operación</th></tr>
+          </thead>
+          <tbody id="clientsTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <h2 id="modalTitle">Detalle de la orden</h2>
+    <div class="modal-sub" id="modalSub"></div>
+    <div id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" id="modalCloseBtn" style="flex:1;">Cerrar</button>
+      <button class="btn btn-danger-outline btn-sm" id="modalCancelBtn" style="flex:1;">Cancelar orden</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast">✓ Rebalanceo ejecutado con éxito</div>
+
+<script>
+/* ============ Datos base ============ */
+const ordersSeed = [
+  { id:1, client:"Pérez, J. C.", clientId:"#10492", broker:"PPI",    action:"COMPRAR", ticker:"AL30",  qty:"1.800",  amount:1188000 },
+  { id:2, client:"Inversora Sur SA", clientId:"#88210", broker:"BALANZ", action:"VENDER", ticker:"T2X4",  qty:"12.000", amount:14100000 },
+  { id:3, client:"Gómez, M.", clientId:"#45912", broker:"IOL",    action:"COMPRAR", ticker:"S31O4", qty:"350",    amount:385000 },
+  { id:4, client:"Fund. Pampa", clientId:"#12093", broker:"PPI",    action:"COMPRAR", ticker:"AL30",  qty:"10.500", amount:6930000 }
+];
+
+const clientsSeed = [
+  { name:"Pérez, J. C.", id:"#10492", broker:"PPI", portfolio:"$ 18,4 M", drift:"+2,1%", last:"hace 6 min" },
+  { name:"Inversora Sur SA", id:"#88210", broker:"BALANZ", portfolio:"$ 61,2 M", drift:"-4,8%", last:"hace 6 min" },
+  { name:"Gómez, M.", id:"#45912", broker:"IOL", portfolio:"$ 5,1 M", drift:"+1,4%", last:"hace 6 min" },
+  { name:"Fund. Pampa", id:"#12093", broker:"PPI", portfolio:"$ 92,7 M", drift:"+3,6%", last:"hace 6 min" }
+];
+
+let orders = JSON.parse(JSON.stringify(ordersSeed));
+orders.forEach(o => { o.state = "pending"; o.error = false; });
+
+const fmtMoney = n => "$ " + n.toLocaleString("es-AR");
+const nowTime = () => new Date().toLocaleTimeString("es-AR", { hour:"2-digit", minute:"2-digit", second:"2-digit" });
+
+/* ============ Navegación ============ */
+document.querySelectorAll(".nav-item").forEach(item=>{
+  item.addEventListener("click", ()=> switchView(item.dataset.view));
+  item.addEventListener("keydown", e=>{ if(e.key==="Enter") switchView(item.dataset.view); });
+});
+function switchView(name){
+  document.querySelectorAll(".nav-item").forEach(n=>n.classList.toggle("active", n.dataset.view===name));
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active", v.id==="view-"+name));
+}
+
+/* ============ Render tabla de órdenes ============ */
+const tableBody = document.getElementById("ordersTable");
+let activeFilter = "todas";
+let searchTerm = "";
+
+function statusMarkup(o){
+  if(o.state==="pending") return `<span class="status status-pending"><span class="pulse-dot"></span>Esperando ejecución</span>`;
+  if(o.state==="api") return `<span class="status status-api"><span class="spinner"></span>API: enviando orden</span>`;
+  if(o.state==="ws") return `<span class="status status-ws-partial"><span class="spinner"></span>WS: en mercado</span>`;
+  if(o.state==="done") return `<span class="status status-done">✓ Ejecutada 100%</span>`;
+  if(o.state==="error") return `<span class="status status-error">✕ Rechazada por ALyC<button class="retry-link" onclick="event.stopPropagation(); retryOrder(${o.id})">Reintentar</button></span>`;
+  return "";
+}
+
+function renderTable(){
+  const filtered = orders.filter(o=>{
+    const matchesFilter = activeFilter==="todas" || o.action===activeFilter;
+    const q = searchTerm.toLowerCase();
+    const matchesSearch = !q || o.client.toLowerCase().includes(q) || o.ticker.toLowerCase().includes(q) || o.broker.toLowerCase().includes(q);
+    return matchesFilter && matchesSearch;
+  });
+
+  if(filtered.length===0){
+    tableBody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="emoji">◌</div><p>No hay órdenes que coincidan con la búsqueda.</p></div></td></tr>`;
+    return;
+  }
+
+  tableBody.innerHTML = filtered.map(o=>`
+    <tr id="row-${o.id}" tabindex="0" onclick="openModal(${o.id})" onkeydown="if(event.key==='Enter') openModal(${o.id})">
+      <td><div class="client-name">${o.client}</div><div class="client-id">${o.clientId}</div></td>
+      <td><span class="badge-broker">${o.broker}</span></td>
+      <td><span class="${o.action==='COMPRAR' ? 'tag-buy':'tag-sell'}">${o.action}</span> ${o.qty} ${o.ticker}</td>
+      <td class="amount">${fmtMoney(o.amount)}</td>
+      <td id="status-${o.id}">${statusMarkup(o)}</td>
+    </tr>
+  `).join("");
+}
+renderTable();
+
+document.getElementById("searchInput").addEventListener("input", e=>{ searchTerm = e.target.value; renderTable(); });
+document.querySelectorAll(".filter-chip").forEach(chip=>{
+  chip.addEventListener("click", ()=>{
+    document.querySelectorAll(".filter-chip").forEach(c=>c.classList.remove("active"));
+    chip.classList.add("active");
+    activeFilter = chip.dataset.filter;
+    renderTable();
+  });
+});
+
+/* ============ Render tabla de comitentes ============ */
+document.getElementById("clientsTable").innerHTML = clientsSeed.map(c=>`
+  <tr>
+    <td><div class="client-name">${c.name}</div><div class="client-id">${c.id}</div></td>
+    <td><span class="badge-broker">${c.broker}</span></td>
+    <td class="amount">${c.portfolio}</td>
+    <td style="color:${c.drift.startsWith('+') ? 'var(--accent)' : 'var(--red)'}; font-family:var(--mono);">${c.drift}</td>
+    <td style="color:var(--text-muted);">${c.last}</td>
+  </tr>
+`).join("");
+
+/* ============ Log en vivo ============ */
+const logBody = document.getElementById("logBody");
+function pushLog(text){
+  const row = document.createElement("div");
+  row.className = "log-row";
+  row.innerHTML = `<span class="log-time">${nowTime()}</span><span>${text}</span>`;
+  logBody.prepend(row);
+  document.getElementById("logCount").textContent = logBody.children.length + " eventos";
+}
+
+/* ============ Progreso ============ */
+function updateProgress(){
+  const done = orders.filter(o=>o.state==="done").length;
+  const pct = Math.round((done/orders.length)*100);
+  document.getElementById("progressFill").style.width = pct+"%";
+  document.getElementById("progressCount").textContent = `${done} / ${orders.length} ejecutadas`;
+}
+updateProgress();
+
+/* ============ Ciclo de ejecución simulado ============ */
+const btn = document.getElementById("btnExecute");
+let running = false;
+
+btn.addEventListener("click", iniciarRebalanceo);
+document.getElementById("btnReset").addEventListener("click", resetSim);
+
+async function iniciarRebalanceo(){
+  if(running) return;
+  running = true;
+  btn.disabled = true;
+  btn.innerHTML = `<span style="display:flex;align-items:center;gap:8px;"><span class="spinner"></span> Procesando API...</span>`;
+  pushLog("Iniciando envío en lote vía REST API...");
+
+  const procesos = orders.map(o => simularCicloDeVidaOrden(o.id));
+  await Promise.all(procesos);
+
+  const errores = orders.filter(o=>o.state==="error").length;
+  if(errores>0){
+    btn.innerHTML = `⚠ ${errores} orden(es) con error`;
+    mostrarToast(`⚠ ${errores} orden(es) rechazada(s) — revisá y reintentá`, "warn");
+  } else {
+    btn.innerHTML = "✓ Órdenes completadas";
+    mostrarToast("✓ Rebalanceo ejecutado con éxito", "ok");
+  }
+  running = false;
+}
+
+function simularCicloDeVidaOrden(orderId){
+  return new Promise(resolve=>{
+    const order = orders.find(o=>o.id===orderId);
+    if(order.state==="done"){ resolve(); return; }
+
+    setTimeout(()=>{
+      order.state = "api";
+      renderTable();
+      pushLog(`API: orden #${order.id} (${order.client}) enviada a ${order.broker}`);
+
+      setTimeout(()=>{
+        // 12% de probabilidad de rechazo simulado, solo en el primer intento
+        const shouldFail = !order.error && Math.random() < 0.12;
+        if(shouldFail){
+          order.state = "error";
+          order.error = true;
+          renderTable();
+          pushLog(`WS: orden #${order.id} rechazada por ${order.broker} — fondos insuficientes`);
+          resolve();
+          return;
         }
 
-        // 3. Lógica de Simulación API + WebSockets
-        async function iniciarRebalanceo() {
-            const btn = document.getElementById('btnExecute');
-            btn.disabled = true;
-            btn.innerHTML = '<div style="display:flex; align-items:center; gap:8px"><div class="spinner"></div> Procesando API...</div>';
-
-            // Promesas para esperar que todas las órdenes terminen
-            const procesos = orders.map(order => simularCicloDeVidaOrden(order.id));
-            
-            await Promise.all(procesos); // Espera que todas las WebSockets terminen
-
-            btn.innerHTML = '✅ Órdenes Completadas';
-            mostrarToast();
-        }
-
-        function simularCicloDeVidaOrden(orderId) {
-            return new Promise(resolve => {
-                const statusCell = document.getElementById(`status-${orderId}`);
-                
-                // PASO 1: Envío vía API REST (Demora entre 200ms y 800ms)
-                setTimeout(() => {
-                    statusCell.innerHTML = `<span class="status status-api"><div class="spinner"></div> API: Enviando orden...</span>`;
-                    
-                    // PASO 2: Confirmación del broker y llegada al mercado (Websocket evento 1)
-                    setTimeout(() => {
-                        statusCell.innerHTML = `<span class="status status-ws-partial"><div class="spinner"></div> WS: En mercado (Operando)</span>`;
-                        
-                        // PASO 3: Ejecución final de la orden (Websocket evento 2)
-                        setTimeout(() => {
-                            statusCell.innerHTML = `<span class="status status-done">✓ Ejecutada 100%</span>`;
-                            resolve(); // Termina el proceso para esta orden
-                        }, Math.random() * 3000 + 1500); // Demora aleatoria 1.5 a 4.5 seg
-
-                    }, Math.random() * 1500 + 1000); 
-
-                }, Math.random() * 800 + 200);
-            });
-        }
-
-        function mostrarToast() {
-            const toast = document.getElementById('toast');
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 4000);
-        }
-
-        // Iniciar
+        order.state = "ws";
         renderTable();
-    </script>
+        pushLog(`WS: orden #${order.id} en mercado, operando`);
+
+        setTimeout(()=>{
+          order.state = "done";
+          renderTable();
+          updateProgress();
+          pushLog(`WS: orden #${order.id} ejecutada 100% — ${order.qty} ${order.ticker}`);
+          resolve();
+        }, Math.random()*2500 + 1200);
+
+      }, Math.random()*1300 + 900);
+    }, Math.random()*700 + 200);
+  });
+}
+
+function retryOrder(orderId){
+  const order = orders.find(o=>o.id===orderId);
+  order.state = "pending";
+  renderTable();
+  pushLog(`Reintentando orden #${order.id} manualmente...`);
+  btn.disabled = true;
+  btn.innerHTML = `<span style="display:flex;align-items:center;gap:8px;"><span class="spinner"></span> Reintentando...</span>`;
+  simularCicloDeVidaOrden(orderId).then(()=>{
+    const stillFailing = orders.some(o=>o.state==="error");
+    btn.disabled = false;
+    btn.innerHTML = stillFailing ? "⚡ Reintentar pendientes" : "✓ Órdenes completadas";
+    if(!stillFailing) mostrarToast("✓ Rebalanceo ejecutado con éxito", "ok");
+  });
+}
+
+function resetSim(){
+  orders = JSON.parse(JSON.stringify(ordersSeed));
+  orders.forEach(o => { o.state = "pending"; o.error = false; });
+  running = false;
+  btn.disabled = false;
+  btn.innerHTML = "⚡ Ejecutar 4 órdenes";
+  logBody.innerHTML = "";
+  document.getElementById("logCount").textContent = "";
+  renderTable();
+  updateProgress();
+  pushLog("Simulación reiniciada.");
+}
+
+/* ============ Toast ============ */
+function mostrarToast(text, type){
+  const toast = document.getElementById("toast");
+  toast.textContent = text;
+  toast.style.background = type==="warn" ? "var(--amber)" : "var(--accent)";
+  toast.classList.add("show");
+  setTimeout(()=>toast.classList.remove("show"), 4200);
+}
+
+/* ============ Modal de detalle ============ */
+const overlay = document.getElementById("modalOverlay");
+function openModal(orderId){
+  const o = orders.find(x=>x.id===orderId);
+  document.getElementById("modalTitle").textContent = `Orden #${o.id} — ${o.ticker}`;
+  document.getElementById("modalSub").textContent = `${o.client} · ${o.clientId}`;
+  document.getElementById("modalBody").innerHTML = `
+    <div class="modal-row"><span>ALyC</span><span>${o.broker}</span></div>
+    <div class="modal-row"><span>Acción</span><span class="${o.action==='COMPRAR'?'tag-buy':'tag-sell'}">${o.action}</span></div>
+    <div class="modal-row"><span>Cantidad</span><span>${o.qty} ${o.ticker}</span></div>
+    <div class="modal-row"><span>Monto</span><span>${fmtMoney(o.amount)}</span></div>
+    <div class="modal-row"><span>Estado</span><span>${statusMarkup(o)}</span></div>
+  `;
+  const cancelBtn = document.getElementById("modalCancelBtn");
+  cancelBtn.style.display = (o.state==="done") ? "none" : "block";
+  cancelBtn.onclick = ()=>{ cancelOrder(o.id); closeModal(); };
+  overlay.classList.add("show");
+}
+function closeModal(){ overlay.classList.remove("show"); }
+document.getElementById("modalClose").addEventListener("click", closeModal);
+document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
+overlay.addEventListener("click", e=>{ if(e.target===overlay) closeModal(); });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeModal(); });
+
+function cancelOrder(orderId){
+  const o = orders.find(x=>x.id===orderId);
+  if(o.state==="done") return;
+  o.state = "error";
+  o.error = true;
+  renderTable();
+  pushLog(`Orden #${o.id} cancelada manualmente por el usuario`);
+  mostrarToast("Orden cancelada", "warn");
+}
+</script>
 </body>
 </html>
