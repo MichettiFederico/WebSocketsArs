@@ -1,110 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rebalancia.io — Plataforma de Rebalanceo Masivo</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg-body:#0b1220; --bg-panel:#111b2e; --bg-card:#152238; --bg-card-hover:#1c2d4a;
-  --border:#243755; --border-soft:#1a2740;
-  --text-main:#eef2f8; --text-muted:#8091ac; --text-dim:#4d6182;
-  --accent:#22c58b; --accent-dim:#1a9b6e; --blue:#4c8dff; --amber:#f5a524; --red:#f2495c;
-  --mono:'JetBrains Mono', monospace;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter',sans-serif; background:var(--bg-body); color:var(--text-main); display:flex; height:100vh; overflow:hidden; font-size:14px; -webkit-font-smoothing:antialiased;}
-@media (prefers-reduced-motion: reduce){ *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;} }
-
-/* --- SIDEBAR --- */
-aside{width:224px; background:#070c16; border-right:1px solid var(--border-soft); padding:24px 14px; display:flex; flex-direction:column; justify-content:space-between; flex-shrink:0;}
-.brand{display:flex; align-items:center; gap:9px; padding:0 8px 28px;}
-.brand-mark{width:26px; height:26px; border-radius:7px; background:linear-gradient(155deg,var(--accent),#0e6b48); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; color:#04120c; flex-shrink:0;}
-.brand-name{font-size:15px; font-weight:700; letter-spacing:-0.01em;}
-.brand-name em{font-style:normal; color:var(--text-dim); font-weight:500;}
-nav{display:flex; flex-direction:column; gap:2px;}
-.nav-item{padding:9px 12px; color:var(--text-muted); border-radius:7px; font-weight:500; cursor:pointer; display:flex; align-items:center; gap:10px; border-left:2px solid transparent; transition:background .15s, color .15s;}
-.nav-item:hover{background:#0e1729; color:var(--text-main);}
-.nav-item.active{background:var(--bg-card); color:var(--text-main); border-left-color:var(--accent);}
-.nav-icon{width:16px; text-align:center; opacity:.85;}
-.sidebar-foot{padding:0 8px; display:flex; flex-direction:column; gap:10px;}
-.env-pill{font-family:var(--mono); font-size:10.5px; color:var(--text-dim); background:#0e1729; border:1px solid var(--border-soft); border-radius:5px; padding:6px 9px; text-align:center;}
-.user-chip{display:flex; align-items:center; gap:9px; padding:8px; border-radius:8px; background:#0e1729;}
-.user-avatar{width:26px; height:26px; border-radius:50%; background:#2a3a58; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--text-muted);}
-.user-meta{line-height:1.25;}
-.user-name{font-size:12px; font-weight:600;}
-.user-role{font-size:11px; color:var(--text-dim);}
-
-/* --- MAIN --- */
-main{flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0;}
-header{background:#070c16; border-bottom:1px solid var(--border-soft); padding:14px 30px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0;}
-.conn-label{color:var(--text-muted); font-weight:500; font-size:13px;}
-.conn-status{display:flex; gap:16px; font-family:var(--mono); font-size:11.5px;}
-.dot{width:6px; height:6px; border-radius:50%; display:inline-block; margin-right:6px;}
-.dot.on{background:var(--accent); box-shadow:0 0 0 3px rgba(34,197,139,.15);}
-.dot.off{background:var(--red); box-shadow:0 0 0 3px rgba(242,73,92,.15);}
-.conn-status span{color:var(--text-muted); display:flex; align-items:center;}
-
-.view{display:none; overflow-y:auto; flex:1;}
-.view.active{display:block;}
-.workspace{padding:30px; display:flex; flex-direction:column; gap:22px; max-width:1180px; margin:0 auto; width:100%;}
-
-.page-header{display:flex; justify-content:space-between; align-items:flex-end; gap:20px; flex-wrap:wrap;}
-.page-header h1{font-size:1.4rem; font-weight:700; letter-spacing:-0.01em; margin-bottom:4px;}
-.page-header p{color:var(--text-muted); font-size:13px;}
-
-/* --- BOTONES --- */
-.btn{border:none; padding:10px 18px; border-radius:7px; font-weight:600; cursor:pointer; font-size:13.5px; font-family:'Inter',sans-serif; transition:filter .15s, transform .1s;}
-.btn:active{transform:translateY(1px);}
-.btn-primary{background:var(--accent); color:#04150e;}
-.btn-primary:hover{filter:brightness(1.08);}
-.btn-primary:disabled{opacity:.45; cursor:not-allowed; filter:none;}
-.btn-ghost{background:transparent; border:1px solid var(--border); color:var(--text-muted);}
-.btn-ghost:hover{color:var(--text-main); border-color:#3a5075;}
-.btn-sm{padding:5px 11px; font-size:12px; border-radius:6px;}
-.btn-danger-outline{background:transparent; border:1px solid rgba(242,73,92,.4); color:var(--red);}
-.btn-danger-outline:hover{background:rgba(242,73,92,.08);}
-
-/* --- TARJETAS ALYCS --- */
-.alyc-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:16px;}
-.alyc-card{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:10px; padding:20px; display:flex; flex-direction:column; gap:12px;}
-.alyc-head{display:flex; justify-content:space-between; align-items:center;}
-.alyc-title{font-size:15px; font-weight:600;}
-.alyc-status{font-size:11px; font-weight:600; padding:4px 8px; border-radius:5px;}
-.alyc-status.connected{background:rgba(34,197,139,.12); color:var(--accent);}
-.alyc-status.disconnected{background:rgba(242,73,92,.12); color:var(--red);}
-.alyc-desc{color:var(--text-muted); font-size:12.5px; line-height:1.4;}
-
-/* --- METRICAS Y TABLAS --- */
-.card-row{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
-.metric-card{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:10px; padding:16px 18px;}
-.metric-label{color:var(--text-dim); font-size:11.5px; margin-bottom:6px; font-weight:600;}
-.metric-value{font-size:1.3rem; font-weight:700; letter-spacing:-0.01em;}
-.metric-sub{font-size:11.5px; color:var(--text-muted); margin-top:3px;}
-
-.table-container{background:var(--bg-card); border:1px solid var(--border-soft); border-radius:10px; overflow:hidden;}
-table{width:100%; border-collapse:collapse; text-align:left;}
-th{background:#0e1729; color:var(--text-dim); padding:11px 18px; font-size:11px; font-weight:600; border-bottom:1px solid var(--border-soft);}
-td{padding:13px 18px; border-bottom:1px solid var(--border-soft); font-size:13px; vertical-align:middle;}
-tbody tr:hover td{background:var(--bg-card-hover);}
-
-/* --- MODALES Y FORMULARIOS --- */
-.modal-overlay{position:fixed; inset:0; background:rgba(4,8,16,.65); backdrop-filter:blur(2px); display:none; align-items:center; justify-content:center; z-index:50;}
-.modal-overlay.show{display:flex;}
-.modal{background:var(--bg-panel); border:1px solid var(--border); border-radius:12px; width:440px; padding:24px; position:relative;}
-.modal h2{font-size:1.05rem; margin-bottom:4px;}
-.modal .modal-sub{color:var(--text-muted); font-size:12.5px; margin-bottom:18px;}
-.field{margin-bottom:14px;}
-.field label{display:block; font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px;}
-.field input, .field select{width:100%; background:#0e1729; border:1px solid var(--border-soft); border-radius:7px; padding:9px 11px; color:var(--text-main); font-size:13px;}
-.modal-actions{display:flex; gap:10px; margin-top:20px;}
-.modal-close{position:absolute; top:16px; right:16px; background:none; border:none; color:var(--text-dim); font-size:18px; cursor:pointer;}
-
-/* TOAST */
-#toast{position:fixed; bottom:22px; right:22px; background:var(--accent); color:#04150e; padding:14px 20px; border-radius:9px; font-weight:700; font-size:13px; transform:translateY(90px); opacity:0; transition:all .3s ease; z-index:60;}
-#toast.show{transform:translateY(0); opacity:1;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rebalancia.io — Plataforma</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -123,30 +24,41 @@ tbody tr:hover td{background:var(--bg-card-hover);}
   </div>
   <div class="sidebar-foot">
     <div class="env-pill">MODO SIMULACIÓN</div>
-    <div class="user-chip">
-      <div class="user-avatar">FM</div>
-      <div class="user-meta"><div class="user-name">Federico M.</div><div class="user-role">Asesor de cartera</div></div>
-    </div>
   </div>
 </aside>
 
 <main>
   <header>
     <div class="conn-label">Estado de Conexiones Activas</div>
-    <div class="conn-status" id="header-conn-status">
-      <!-- Se llena por JS -->
-    </div>
+    <div class="conn-status" id="header-conn-status"></div>
   </header>
 
-  <!-- VISTA EJECUCION (Simplificada para el ejemplo, contiene la tabla original) -->
+  <!-- SECCIÓN 1: DASHBOARD -->
+  <section class="view" id="view-dashboard">
+    <div class="workspace">
+      <div class="page-header">
+        <div><h1>Dashboard</h1><p>Resumen de actividad</p></div>
+      </div>
+      <div class="card-row">
+        <div class="metric-card"><div class="metric-label">AUM BAJO GESTIÓN</div><div class="metric-value">$ 79,6 M</div></div>
+        <div class="metric-card"><div class="metric-label">TASA DE ÉXITO</div><div class="metric-value" style="color:var(--accent);">100%</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2: EJECUCIÓN -->
   <section class="view active" id="view-ejecucion">
     <div class="workspace">
       <div class="page-header">
-        <div><h1>Rebalanceo en lote</h1><p>Armá el lote y ejecutalo cuando esté listo</p></div>
+        <div><h1>Rebalanceo en lote</h1><p>Armá el lote y ejecutalo</p></div>
         <div style="display:flex; gap:10px;">
-          <button class="btn btn-ghost" id="btnAddOrder">+ Agregar orden</button>
+          <button class="btn btn-ghost" id="btnReset">↺ Reiniciar</button>
           <button id="btnExecute" class="btn btn-primary">⚡ Ejecutar órdenes</button>
         </div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-count" id="progressCount">0 / 0 ejecutadas</div>
       </div>
       <div class="table-container">
         <table>
@@ -157,11 +69,11 @@ tbody tr:hover td{background:var(--bg-card-hover);}
     </div>
   </section>
 
-  <!-- VISTA COMITENTES -->
+  <!-- SECCIÓN 3: COMITENTES -->
   <section class="view" id="view-comitentes">
     <div class="workspace">
       <div class="page-header">
-        <div><h1>Comitentes</h1><p>Cuentas gestionadas listas para rebalanceo</p></div>
+        <div><h1>Comitentes</h1><p>Cuentas gestionadas</p></div>
         <button class="btn btn-primary" id="btnAddClient">+ Agregar comitente</button>
       </div>
       <div class="table-container">
@@ -173,55 +85,42 @@ tbody tr:hover td{background:var(--bg-card-hover);}
     </div>
   </section>
 
-  <!-- VISTA CONEXIONES ALYCS (NUEVA) -->
+  <!-- SECCIÓN 4: CONEXIONES -->
   <section class="view" id="view-conexiones">
     <div class="workspace">
       <div class="page-header">
-        <div>
-          <h1>Conexiones ALyCs</h1>
-          <p>Vinculá las cuentas maestras de los brokers para leer tenencias y ejecutar órdenes.</p>
-        </div>
+        <div><h1>Conexiones ALyCs</h1><p>Vinculá las cuentas maestras de los brokers.</p></div>
       </div>
-      
-      <div class="alyc-grid" id="alycGrid">
-        <!-- Renderizado por JS -->
-      </div>
+      <div class="alyc-grid" id="alycGrid"></div>
     </div>
   </section>
 </main>
 
-<!-- MODAL: AGREGAR COMITENTE -->
+<!-- MODALES OCULTOS -->
+<div class="modal-overlay" id="apiModalOverlay">
+  <div class="modal">
+    <h2 id="apiModalTitle">Vincular API</h2>
+    <form id="apiForm">
+      <input type="hidden" id="apiBrokerName">
+      <input type="text" class="field-input" placeholder="API Key" required style="margin-bottom:10px; width:100%;">
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="apiCancelBtn" style="flex:1;">Cancelar</button>
+        <button type="submit" class="btn btn-primary btn-sm" style="flex:1;">Conectar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div class="modal-overlay" id="clientModalOverlay">
   <div class="modal">
-    <button class="modal-close" id="clientModalClose">✕</button>
-    <h2>Agregar comitente</h2>
-    <div class="modal-sub">Se suma a la base y queda disponible para operar</div>
+    <h2>Agregar Comitente</h2>
     <form id="clientForm">
-      <div class="field">
-        <label>Nombre / razón social</label>
-        <input type="text" id="cfName" required>
-      </div>
-      <div class="field">
-        <label>ALyC</label>
-        <select id="cfBroker" required>
-          <option value="PPI">PPI</option>
-          <option value="BALANZ">Balanz</option>
-          <option value="IOL">IOL</option>
-          <option value="COCOS">Cocos Capital</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Perfil de riesgo</label>
-        <select id="cfRisk" required>
-          <option value="Conservador">Conservador</option>
-          <option value="Moderado">Moderado</option>
-          <option value="Agresivo">Agresivo</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Cartera actual (ARS)</label>
-        <input type="number" id="cfPortfolio" required>
-      </div>
+      <input type="text" id="cfName" class="field-input" placeholder="Nombre" required style="margin-bottom:10px; width:100%;">
+      <select id="cfBroker" class="field-input" required style="margin-bottom:10px; width:100%;">
+        <option value="PPI">PPI</option>
+        <option value="Balanz">Balanz</option>
+      </select>
+      <input type="number" id="cfPortfolio" class="field-input" placeholder="Cartera en ARS" required style="margin-bottom:10px; width:100%;">
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost btn-sm" id="clientCancelBtn" style="flex:1;">Cancelar</button>
         <button type="submit" class="btn btn-primary btn-sm" style="flex:1;">Guardar</button>
@@ -230,161 +129,10 @@ tbody tr:hover td{background:var(--bg-card-hover);}
   </div>
 </div>
 
-<!-- MODAL: VINCULAR API ALYC -->
-<div class="modal-overlay" id="apiModalOverlay">
-  <div class="modal">
-    <button class="modal-close" id="apiModalClose">✕</button>
-    <h2 id="apiModalTitle">Vincular API</h2>
-    <div class="modal-sub">Ingresá tus credenciales institucionales.</div>
-    <form id="apiForm">
-      <input type="hidden" id="apiBrokerName">
-      <div class="field">
-        <label>API Key / Token Público</label>
-        <input type="text" placeholder="ej: pk_live_8392jf..." required>
-      </div>
-      <div class="field">
-        <label>Secret Key (Solo lectura y operatoria)</label>
-        <input type="password" placeholder="******************" required>
-      </div>
-      <div class="modal-actions">
-        <button type="button" class="btn btn-ghost btn-sm" id="apiCancelBtn" style="flex:1;">Cancelar</button>
-        <button type="submit" class="btn btn-primary btn-sm" style="flex:1;">Conectar Broker</button>
-      </div>
-    </form>
-  </div>
-</div>
+<div id="toast"></div>
 
-<div id="toast">Acción completada</div>
-
-<script>
-// --- NAVEGACIÓN ---
-document.querySelectorAll(".nav-item").forEach(item => {
-  item.addEventListener("click", () => {
-    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
-    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-    item.classList.add("active");
-    document.getElementById("view-" + item.dataset.view).classList.add("active");
-  });
-});
-
-// --- ESTADO DE ALYCS ---
-let alycs = [
-  { name: "PPI", connected: true, desc: "Portfolio Personal Inversiones. Conexión institucional." },
-  { name: "Balanz", connected: true, desc: "API Retail y Agentes. Ejecución rápida." },
-  { name: "IOL", connected: false, desc: "InvertirOnline. Requiere Token OAuth2." },
-  { name: "Cocos Capital", connected: false, desc: "Cocos API REST. Sin comisiones." }
-];
-
-function renderAlycs() {
-  const grid = document.getElementById("alycGrid");
-  const headerStatus = document.getElementById("header-conn-status");
-  
-  grid.innerHTML = alycs.map(a => `
-    <div class="alyc-card">
-      <div class="alyc-head">
-        <div class="alyc-title">${a.name}</div>
-        <div class="alyc-status ${a.connected ? 'connected' : 'disconnected'}">
-          ${a.connected ? '✓ Conectado' : '✕ Desconectado'}
-        </div>
-      </div>
-      <div class="alyc-desc">${a.desc}</div>
-      <button class="btn ${a.connected ? 'btn-ghost' : 'btn-primary'} btn-sm" 
-              onclick="${a.connected ? `disconnectAlyc('${a.name}')` : `openApiModal('${a.name}')`}">
-        ${a.connected ? 'Desvincular' : 'Conectar API Key'}
-      </button>
-    </div>
-  `).join("");
-
-  headerStatus.innerHTML = alycs.map(a => `
-    <span><span class="dot ${a.connected ? 'on' : 'off'}"></span>${a.name}</span>
-  `).join("");
-}
-
-// Lógica Modales ALyC
-const apiModal = document.getElementById("apiModalOverlay");
-function openApiModal(brokerName) {
-  document.getElementById("apiModalTitle").innerText = `Vincular API: ${brokerName}`;
-  document.getElementById("apiBrokerName").value = brokerName;
-  document.getElementById("apiForm").reset();
-  apiModal.classList.add("show");
-}
-
-document.getElementById("apiForm").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const broker = document.getElementById("apiBrokerName").value;
-  const alyc = alycs.find(a => a.name === broker);
-  if (alyc) alyc.connected = true;
-  apiModal.classList.remove("show");
-  renderAlycs();
-  showToast(`¡Conectado exitosamente con ${broker}!`);
-});
-
-function disconnectAlyc(brokerName) {
-  const alyc = alycs.find(a => a.name === brokerName);
-  if (alyc) alyc.connected = false;
-  renderAlycs();
-  showToast(`Desvinculado de ${brokerName}`);
-}
-document.getElementById("apiModalClose").onclick = () => apiModal.classList.remove("show");
-document.getElementById("apiCancelBtn").onclick = () => apiModal.classList.remove("show");
-
-
-// --- LÓGICA DE COMITENTES ---
-let clients = [
-  { id: "#10492", name: "Pérez, J. C.", broker: "PPI", risk: "Conservador", portfolio: 18400000 },
-  { id: "#88210", name: "Inversora Sur SA", broker: "Balanz", risk: "Moderado", portfolio: 61200000 }
-];
-let nextClientNum = 20000;
-
-function renderClients() {
-  const tbody = document.getElementById("clientsTable");
-  tbody.innerHTML = clients.map(c => `
-    <tr>
-      <td><b>${c.name}</b></td>
-      <td style="color:var(--text-muted);">${c.id}</td>
-      <td>${c.broker}</td>
-      <td>${c.risk}</td>
-      <td style="font-family:var(--mono);">$ ${c.portfolio.toLocaleString('es-AR')}</td>
-    </tr>
-  `).join("");
-}
-
-// Lógica Modales Comitente
-const clientModal = document.getElementById("clientModalOverlay");
-document.getElementById("btnAddClient").onclick = () => {
-  document.getElementById("clientForm").reset();
-  clientModal.classList.add("show");
-};
-
-document.getElementById("clientForm").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const newClient = {
-    id: "#" + (nextClientNum++),
-    name: document.getElementById("cfName").value,
-    broker: document.getElementById("cfBroker").value,
-    risk: document.getElementById("cfRisk").value,
-    portfolio: parseFloat(document.getElementById("cfPortfolio").value)
-  };
-  clients.push(newClient);
-  clientModal.classList.remove("show");
-  renderClients();
-  showToast(`Comitente ${newClient.name} agregado correctamente.`);
-});
-
-document.getElementById("clientModalClose").onclick = () => clientModal.classList.remove("show");
-document.getElementById("clientCancelBtn").onclick = () => clientModal.classList.remove("show");
-
-// --- UTILIDADES ---
-function showToast(msg) {
-  const t = document.getElementById("toast");
-  t.innerText = msg;
-  t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 3000);
-}
-
-// Inicializar
-renderAlycs();
-renderClients();
-</script>
+<!-- Lógica separada -->
+<script src="data.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
