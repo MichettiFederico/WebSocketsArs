@@ -1,462 +1,338 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rebalancia.io - Dashboard del Asesor</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-body: #0f172a;
-            --bg-card: #1e293b;
-            --bg-card-hover: #334155;
-            --border: #334155;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent-green: #10b981;
-            --accent-blue: #3b82f6;
-            --accent-yellow: #f59e0b;
-            --accent-red: #ef4444;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-            font-size: 14px;
-        }
-
-        /* Sidebar */
-        aside {
-            width: 240px;
-            background: #090d16;
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px 16px;
-        }
-
-        .brand {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 32px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .brand span { color: var(--accent-green); }
-
-        .nav-menu {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .nav-item a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 12px;
-            color: var(--text-muted);
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 500;
-        }
-
-        .nav-item.active a, .nav-item a:hover {
-            background: var(--bg-card);
-            color: var(--text-main);
-        }
-
-        .nav-item.active a {
-            border-left: 3px solid var(--accent-green);
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border);
-        }
-
-        .avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--accent-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        /* Main Content */
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        /* Top Navigation Bar */
-        header {
-            background: #090d16;
-            border-bottom: 1px solid var(--border);
-            padding: 16px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .status-badges {
-            display: flex;
-            gap: 12px;
-        }
-
-        .status-badge {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--accent-green);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--accent-green);
-        }
-
-        /* Main Workspace */
-        .workspace {
-            padding: 32px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .page-header h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .btn-primary {
-            background: var(--accent-green);
-            color: #000;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary:hover {
-            opacity: 0.9;
-        }
-
-        /* Portfolio Selector Card */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
-        }
-
-        .portfolio-summary {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .metric-label {
-            color: var(--text-muted);
-            font-size: 12px;
-            margin-bottom: 4px;
-        }
-
-        .metric-value {
-            font-size: 1.25rem;
-            font-weight: 700;
-        }
-
-        /* Allocation Bar */
-        .allocation-bar-container {
-            margin-top: 16px;
-        }
-
-        .allocation-bar {
-            height: 8px;
-            border-radius: 4px;
-            background: #334155;
-            display: flex;
-            overflow: hidden;
-            margin-bottom: 8px;
-        }
-
-        .alloc-al30 { width: 40%; background: #3b82f6; }
-        .alloc-lecap { width: 35%; background: #10b981; }
-        .alloc-botes { width: 25%; background: #f59e0b; }
-
-        .allocation-legend {
-            display: flex;
-            gap: 16px;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .legend-item { display: flex; align-items: center; gap: 6px; }
-        .dot-al30 { width: 8px; height: 8px; background: #3b82f6; border-radius: 2px; }
-        .dot-lecap { width: 8px; height: 8px; background: #10b981; border-radius: 2px; }
-        .dot-botes { width: 8px; height: 8px; background: #f59e0b; border-radius: 2px; }
-
-        /* Orders Table */
-        .table-container {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .table-header-title {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        th {
-            background: rgba(15, 23, 42, 0.5);
-            color: var(--text-muted);
-            padding: 12px 20px;
-            font-weight: 500;
-            font-size: 12px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        td {
-            padding: 14px 20px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        tr:last-child td { border-bottom: none; }
-
-        tr:hover td {
-            background: var(--bg-card-hover);
-        }
-
-        .badge-broker {
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 600;
-            background: #0f172a;
-            border: 1px solid var(--border);
-        }
-
-        .tag-buy { color: var(--accent-green); font-weight: 600; }
-        .tag-sell { color: var(--accent-red); font-weight: 600; }
-
-        input[type="checkbox"] {
-            accent-color: var(--accent-green);
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rebalancia.io — Plataforma de Rebalanceo Masivo de Carteras</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-    <!-- Sidebar Navigation -->
-    <aside>
+<aside id="sidebar">
+  <div>
+    <div class="brand">
+      <div class="brand-mark">R</div>
+      <div class="brand-name">Rebalancia<em>.io</em></div>
+    </div>
+    <nav>
+      <div class="nav-item" data-view="dashboard" tabindex="0"><span class="nav-icon">◇</span> Dashboard Global</div>
+      <div class="nav-item" data-view="modelos" tabindex="0"><span class="nav-icon">◆</span> Carteras modelo</div>
+      <div class="nav-item active" data-view="ejecucion" tabindex="0"><span class="nav-icon">⚡</span> Ejecución de rebalanceo</div>
+      <div class="nav-item" data-view="comitentes" tabindex="0"><span class="nav-icon">◎</span> Comitentes <span class="nav-count" id="navClientCount"></span></div>
+      <div class="nav-item" data-view="conexiones" tabindex="0"><span class="nav-icon">⇄</span> Conexiones ALyCs</div>
+      <div class="nav-item" data-view="configuracion" tabindex="0"><span class="nav-icon">⚙</span> Configuración</div>
+    </nav>
+  </div>
+  <div class="sidebar-foot">
+    <div class="env-pill">MODO SIMULACIÓN</div>
+    <div class="user-chip">
+      <div class="user-avatar">FM</div>
+      <div class="user-meta"><div class="user-name">Federico M.</div><div class="user-role">Idóneo CNV</div></div>
+    </div>
+  </div>
+</aside>
+
+<main>
+  <header>
+    <div class="conn-label">Conexión API REST + WebSockets</div>
+    <div class="conn-status" id="headerConnStatus"></div>
+  </header>
+
+  <!-- ===================== EJECUCIÓN ===================== -->
+  <section class="view active" id="view-ejecucion">
+    <div class="workspace">
+      <div class="page-header">
         <div>
-            <div class="brand">Rebalancia<span>.io</span></div>
-            <ul class="nav-menu">
-                <li class="nav-item"><a href="#">📊 Dashboard Global</a></li>
-                <li class="nav-item"><a href="#">🎯 Carteras Modelo</a></li>
-                <li class="nav-item active"><a href="#">⚡ Ejecución de Rebalanceo</a></li>
-                <li class="nav-item"><a href="#">👥 Comitentes (412)</a></li>
-                <li class="nav-item"><a href="#">🔌 Conexiones ALYCs</a></li>
-                <li class="nav-item"><a href="#">⚙️ Configuración</a></li>
-            </ul>
+          <h1>Rebalanceo en lote</h1>
+          <p>Cartera modelo activa: <strong id="activeModelLabel">—</strong> · seleccioná las órdenes y ejecutalas cuando el lote esté listo</p>
         </div>
-        <div class="user-profile">
-            <div class="avatar">IR</div>
-            <div>
-                <div style="font-weight: 600; font-size: 13px;">Ignacio Rodríguez</div>
-                <div style="font-size: 11px; color: var(--text-muted);">Idóneo CNV #4821</div>
-            </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-ghost" id="btnGenerateFromModel">◆ Generar desde modelo</button>
+          <button class="btn btn-ghost" id="btnAddOrder">+ Agregar orden manual</button>
+          <button class="btn btn-ghost" id="btnReset">↺ Reiniciar</button>
+          <button id="btnExecute" class="btn btn-primary">⚡ Ejecutar seleccionadas</button>
         </div>
-    </aside>
+      </div>
 
-    <!-- Main Workspace -->
-    <main>
-        <!-- Top Nav -->
-        <header>
-            <div style="color: var(--text-muted);">
-                Conexión FIX / API Institucional
-            </div>
-            <div class="status-badges">
-                <div class="status-badge"><span class="status-dot"></span> Balanz API: Online</div>
-                <div class="status-badge"><span class="status-dot"></span> PPI FIX: Online</div>
-                <div class="status-badge"><span class="status-dot"></span> IOL API: Online</div>
-            </div>
-        </header>
-
-        <div class="workspace">
-            <!-- Title and Action -->
-            <div class="page-header">
-                <div>
-                    <h1>Rebalanceo Masivo de Cartera</h1>
-                    <p style="color: var(--text-muted); margin-top: 4px;">Seleccioná el modelo y enviá órdenes en lote a las ALYCs correspondientes.</p>
-                </div>
-                <button class="btn-primary" onclick="alert('Enviando 142 órdenes a través del protocolo FIX/API...');">
-                    <span>⚡ Ejecutar 142 Órdenes en Lote</span>
-                </button>
-            </div>
-
-            <!-- Portfolio Model Details Card -->
-            <div class="card">
-                <div class="portfolio-summary">
-                    <div>
-                        <div class="metric-label">CARTERA MODELO SELECCIONADA</div>
-                        <select style="background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border); padding: 8px; border-radius: 6px; width: 100%; font-weight: 600;">
-                            <option>Conservadora ARS / USD (Soberanos + LECAPs)</option>
-                            <option>Moderada Crecimiento Corporativo</option>
-                            <option>Especial Cobertura Inflation (CER)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <div class="metric-label">AUM IMPACTADO</div>
-                        <div class="metric-value">$ 450.200.000 ARS</div>
-                    </div>
-                    <div>
-                        <div class="metric-label">CUENTAS A REBALANCEAR</div>
-                        <div class="metric-value">142 Comitentes</div>
-                    </div>
-                    <div>
-                        <div class="metric-label">DESVÍO PROMEDIO</div>
-                        <div class="metric-value" style="color: var(--accent-yellow);">14,2% vs Target</div>
-                    </div>
-                </div>
-
-                <!-- Allocation Target Visual -->
-                <div class="allocation-bar-container">
-                    <div class="metric-label" style="margin-bottom: 6px;">ASIGNACIÓN OBJETIVO</div>
-                    <div class="allocation-bar">
-                        <div class="alloc-al30"></div>
-                        <div class="alloc-lecap"></div>
-                        <div class="alloc-botes"></div>
-                    </div>
-                    <div class="allocation-legend">
-                        <div class="legend-item"><span class="dot-al30"></span> AL30 (40%)</div>
-                        <div class="legend-item"><span class="dot-lecap"></span> S31O4 LECAP (35%)</div>
-                        <div class="legend-item"><span class="dot-botes"></span> T2X4 BONCER (25%)</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Generated Orders Table -->
-            <div class="table-container">
-                <div class="table-header-title">
-                    <span style="font-weight: 600; font-size: 15px;">Órdenes Sugeridas por el Algoritmo</span>
-                    <span style="color: var(--text-muted); font-size: 12px;">Se requiere liquidez disponible para compras.</span>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th><input type="checkbox" checked></th>
-                            <th>COMITENTE / CLIENTE</th>
-                            <th>ALYC</th>
-                            <th>LIQUIDEZ ARS</th>
-                            <th>DESVÍO</th>
-                            <th>ACCIÓN SUGERIDA</th>
-                            <th>MONTO ESTIMADO</th>
-                            <th>ESTADO</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><input type="checkbox" checked></td>
-                            <td><strong>#10492</strong> - Perez Juan Carlos</td>
-                            <td><span class="badge-broker">PPI</span></td>
-                            <td>$ 1.250.000</td>
-                            <td style="color: var(--accent-red); font-weight: 600;">-18%</td>
-                            <td><span class="tag-buy">COMPRAR</span> 1.800 AL30</td>
-                            <td>$ 1.188.000</td>
-                            <td><span style="color: var(--accent-green);">✓ Listo</span></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" checked></td>
-                            <td><strong>#88210</strong> - Inversora del Sur S.A.</td>
-                            <td><span class="badge-broker">BALANZ</span></td>
-                            <td>$ 15.400.000</td>
-                            <td style="color: var(--accent-yellow); font-weight: 600;">+12%</td>
-                            <td><span class="tag-sell">VENDER</span> 12.000 T2X4</td>
-                            <td>$ 14.100.000</td>
-                            <td><span style="color: var(--accent-green);">✓ Listo</span></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" checked></td>
-                            <td><strong>#45912</strong> - Gómez María Elena</td>
-                            <td><span class="badge-broker">IOL</span></td>
-                            <td>$ 420.000</td>
-                            <td style="color: var(--accent-red); font-weight: 600;">-22%</td>
-                            <td><span class="tag-buy">COMPRAR</span> 350 S31O4</td>
-                            <td>$ 385.000</td>
-                            <td><span style="color: var(--accent-green);">✓ Listo</span></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" checked></td>
-                            <td><strong>#12093</strong> - Fundación Pampa</td>
-                            <td><span class="badge-broker">PPI</span></td>
-                            <td>$ 8.900.000</td>
-                            <td style="color: var(--accent-yellow); font-weight: 600;">-8%</td>
-                            <td><span class="tag-buy">COMPRAR</span> 10.500 AL30</td>
-                            <td>$ 6.930.000</td>
-                            <td><span style="color: var(--accent-green);">✓ Listo</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+      <div class="card-row">
+        <div class="metric-card">
+          <div class="metric-label">AUM SELECCIONADO</div>
+          <div class="metric-value" id="metricAum">$ 0</div>
+          <div class="metric-sub" id="metricAumSub">sobre 0 comitentes</div>
         </div>
-    </main>
+        <div class="metric-card">
+          <div class="metric-label">ÓRDENES SELECCIONADAS</div>
+          <div class="metric-value" id="metricOrders">0 / 0</div>
+          <div class="metric-sub">de compra y venta</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">TIPO DE ENVÍO</div>
+          <div class="metric-value" style="color:var(--blue);">REST Batch</div>
+          <div class="metric-sub">envío secuenciado</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">MONITOREO</div>
+          <div class="metric-value" style="color:var(--amber);">WebSockets</div>
+          <div class="metric-sub">estado en vivo por orden</div>
+        </div>
+      </div>
 
+      <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-count" id="progressCount">0 / 0 ejecutadas</div>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-box">
+          <span style="color:var(--text-dim);">⌕</span>
+          <input type="text" id="searchInput" placeholder="Buscar por comitente, símbolo o ALyC...">
+        </div>
+        <button class="filter-chip active" data-filter="todas">Todas</button>
+        <button class="filter-chip" data-filter="COMPRAR">Compras</button>
+        <button class="filter-chip" data-filter="VENDER">Ventas</button>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th><input type="checkbox" class="row-check" id="selectAllCheckbox" checked></th>
+              <th>Comitente</th>
+              <th>ALyC</th>
+              <th>Liquidez ARS</th>
+              <th>Desvío</th>
+              <th>Acción sugerida</th>
+              <th>Monto estimado</th>
+              <th>Estado en vivo</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="ordersTable"></tbody>
+        </table>
+      </div>
+
+      <div class="log-panel">
+        <div class="log-head"><span>Actividad en vivo</span><span id="logCount" style="font-family:var(--mono); font-weight:400; color:var(--text-dim);"></span></div>
+        <div class="log-body" id="logBody"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== DASHBOARD GLOBAL ===================== -->
+  <section class="view" id="view-dashboard">
+    <div class="workspace">
+      <div class="page-header"><div><h1>Dashboard Global</h1><p>Actividad de rebalanceo de los últimos 7 días</p></div></div>
+      <div class="card-row">
+        <div class="metric-card"><div class="metric-label">ÓRDENES EJECUTADAS</div><div class="metric-value">128</div><div class="metric-sub">últimos 7 días</div></div>
+        <div class="metric-card"><div class="metric-label">TASA DE ÉXITO</div><div class="metric-value" style="color:var(--accent);">96,1%</div><div class="metric-sub">5 reintentos exitosos</div></div>
+        <div class="metric-card"><div class="metric-label">TIEMPO PROMEDIO</div><div class="metric-value">3,4 s</div><div class="metric-sub">envío → confirmación</div></div>
+        <div class="metric-card"><div class="metric-label">CARTERA TOTAL COMITENTES</div><div class="metric-value" id="dashPortfolio">$ 0</div><div class="metric-sub" id="dashPortfolioSub">0 comitentes activos</div></div>
+      </div>
+      <div class="dash-grid">
+        <div class="panel">
+          <h3>Volumen por ALyC (7 días)</h3>
+          <div class="bar-row"><div class="bar-label">PPI</div><div class="bar-track"><div class="bar-fill" style="width:82%; background:var(--accent);"></div></div><div class="bar-val">$ 168M</div></div>
+          <div class="bar-row"><div class="bar-label">Balanz</div><div class="bar-track"><div class="bar-fill" style="width:58%; background:var(--blue);"></div></div><div class="bar-val">$ 119M</div></div>
+          <div class="bar-row"><div class="bar-label">IOL</div><div class="bar-track"><div class="bar-fill" style="width:46%; background:var(--amber);"></div></div><div class="bar-val">$ 94M</div></div>
+          <div class="bar-row"><div class="bar-label">Cocos</div><div class="bar-track"><div class="bar-fill" style="width:15%; background:var(--text-dim);"></div></div><div class="bar-val">$ 31M</div></div>
+        </div>
+        <div class="panel">
+          <h3>Últimos eventos</h3>
+          <div class="activity-item"><div class="activity-dot" style="background:var(--accent);"></div><div class="activity-text"><strong>Lote #204</strong> ejecutado 100% · hace 6 min</div></div>
+          <div class="activity-item"><div class="activity-dot" style="background:var(--blue);"></div><div class="activity-text">Nuevo modelo <strong>Conservador ARS</strong> publicado · hace 2 h</div></div>
+          <div class="activity-item"><div class="activity-dot" style="background:var(--amber);"></div><div class="activity-text">Reintento en orden tras rechazo de ALyC · hace 5 h</div></div>
+          <div class="activity-item"><div class="activity-dot" style="background:var(--accent);"></div><div class="activity-text"><strong>Lote #203</strong> ejecutado 100% · 12 órdenes · ayer</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CARTERAS MODELO ===================== -->
+  <section class="view" id="view-modelos">
+    <div class="workspace">
+      <div class="page-header">
+        <div><h1>Carteras modelo</h1><p>Definí asignaciones objetivo por instrumento. La cartera seleccionada queda activa para el rebalanceo.</p></div>
+        <button class="btn btn-primary" id="btnAddModel">+ Nueva cartera modelo</button>
+      </div>
+      <div class="model-grid" id="modelGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===================== COMITENTES ===================== -->
+  <section class="view" id="view-comitentes">
+    <div class="workspace">
+      <div class="page-header">
+        <div><h1>Comitentes</h1><p>Cuentas gestionadas y disponibles para incluir en el rebalanceo</p></div>
+        <button class="btn btn-primary" id="btnAddClient">+ Agregar comitente</button>
+      </div>
+
+      <div class="stats-strip">
+        <div class="stat-pill"><div class="metric-label">TOTAL COMITENTES</div><div class="metric-value" id="statTotalClients">0</div></div>
+        <div class="stat-pill"><div class="metric-label">ALyCs INVOLUCRADAS</div><div class="metric-value" id="statBrokers">0</div></div>
+        <div class="stat-pill"><div class="metric-label">CARTERA TOTAL</div><div class="metric-value" id="statPortfolio">$ 0</div></div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead><tr><th>Comitente</th><th>ALyC</th><th>Perfil</th><th>Cartera actual</th><th>Liquidez disponible</th><th>Última operación</th><th></th></tr></thead>
+          <tbody id="clientsTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONEXIONES ALyCs ===================== -->
+  <section class="view" id="view-conexiones">
+    <div class="workspace">
+      <div class="page-header"><div><h1>Conexiones ALyCs</h1><p>Estado de las integraciones vía API / FIX con cada agente</p></div></div>
+      <div class="conn-grid" id="connGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===================== CONFIGURACIÓN ===================== -->
+  <section class="view" id="view-configuracion">
+    <div class="workspace">
+      <div class="page-header"><div><h1>Configuración</h1><p>Preferencias de la cuenta y del flujo de ejecución</p></div></div>
+
+      <div class="settings-panel">
+        <h3>Perfil</h3>
+        <div class="field"><label for="cfgName">Nombre</label><input type="text" id="cfgName" value="Federico Michetti"></div>
+        <div class="field"><label for="cfgMatricula">Matrícula / N° de idóneo CNV</label><input type="text" id="cfgMatricula" value="CNV #4821"></div>
+        <div class="field" style="margin-bottom:0;"><label for="cfgEmail">Email de notificaciones</label><input type="email" id="cfgEmail" value="fede@rebalancia.io"></div>
+      </div>
+
+      <div class="settings-panel">
+        <h3>Alertas y confirmaciones</h3>
+        <div class="toggle-row">
+          <div><div class="toggle-row-label">Confirmar antes de ejecutar un lote</div><div class="toggle-row-sub">Muestra un resumen antes de enviar las órdenes a las ALyCs</div></div>
+          <label class="switch"><input type="checkbox" id="cfgConfirm" checked><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div><div class="toggle-row-label">Avisarme si una orden es rechazada</div><div class="toggle-row-sub">Notificación por email ante un rechazo de la ALyC</div></div>
+          <label class="switch"><input type="checkbox" id="cfgAlertReject" checked><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div><div class="toggle-row-label">Reintento automático</div><div class="toggle-row-sub">Reintentar una vez sin intervención ante un rechazo transitorio</div></div>
+          <label class="switch"><input type="checkbox" id="cfgAutoRetry"><span class="slider"></span></label>
+        </div>
+      </div>
+
+      <div class="settings-panel">
+        <h3>Plan de suscripción</h3>
+        <div class="plan-badge">◆ Plan Advisor Pro — hasta 500 comitentes gestionados</div>
+        <p style="color:var(--text-muted); font-size:12.5px; margin-top:12px; line-height:1.5;">
+          Facturación mensual por volumen de AUM gestionado. Incluye conexión API/FIX a PPI, Balanz, IOL y Cocos Capital,
+          carteras modelo ilimitadas y soporte prioritario.
+        </p>
+      </div>
+
+      <button class="btn btn-primary" id="btnSaveConfig" style="align-self:flex-start;">Guardar configuración</button>
+    </div>
+  </section>
+</main>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <h2 id="modalTitle">Detalle de la orden</h2>
+    <div class="modal-sub" id="modalSub"></div>
+    <div id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" id="modalCloseBtn" style="flex:1;">Cerrar</button>
+      <button class="btn btn-danger-outline btn-sm" id="modalCancelBtn" style="flex:1;">Cancelar orden</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="orderModalOverlay">
+  <div class="modal">
+    <button class="modal-close" id="orderModalClose">✕</button>
+    <h2>Agregar orden manual</h2>
+    <div class="modal-sub">Elegí comitente, símbolo y nominales — el monto se calcula solo</div>
+    <form id="orderForm">
+      <div class="field"><label for="ofClient">Comitente</label><select id="ofClient" required></select></div>
+      <div class="field-row">
+        <div class="field"><label for="ofAction">Acción</label>
+          <select id="ofAction" required><option value="COMPRAR">Comprar</option><option value="VENDER">Vender</option></select>
+        </div>
+        <div class="field"><label for="ofSymbol">Símbolo</label><select id="ofSymbol" required></select></div>
+      </div>
+      <div class="field">
+        <label for="ofQty">Nominales</label>
+        <input type="number" id="ofQty" min="1" step="1" placeholder="ej: 1000" required>
+        <div class="field-hint" id="ofPriceHint">Precio de referencia: —</div>
+      </div>
+      <div class="compute-box"><span class="label">Monto estimado</span><span class="value" id="ofComputed">$ 0</span></div>
+      <div class="form-error" id="orderFormError">Completá comitente, símbolo y una cantidad de nominales válida.</div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="orderCancelBtn" style="flex:1;">Cancelar</button>
+        <button type="submit" class="btn btn-primary btn-sm" style="flex:1;">Agregar al lote</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="clientModalOverlay">
+  <div class="modal">
+    <button class="modal-close" id="clientModalClose">✕</button>
+    <h2>Agregar comitente</h2>
+    <div class="modal-sub">Se suma a la base y queda disponible para incluirlo en próximos lotes</div>
+    <form id="clientForm">
+      <div class="field"><label for="cfName">Nombre / razón social</label><input type="text" id="cfName" placeholder="ej: Rodríguez, A." required></div>
+      <div class="field-row">
+        <div class="field"><label for="cfBroker">ALyC</label>
+          <select id="cfBroker" required><option value="PPI">PPI</option><option value="BALANZ">Balanz</option><option value="IOL">IOL</option><option value="COCOS">Cocos Capital</option></select>
+        </div>
+        <div class="field"><label for="cfRisk">Perfil de riesgo</label>
+          <select id="cfRisk" required><option value="conservador">Conservador</option><option value="moderado">Moderado</option><option value="agresivo">Agresivo</option></select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="cfPortfolio">Cartera actual (ARS)</label><input type="number" id="cfPortfolio" min="0" step="1000" placeholder="ej: 5000000" required></div>
+        <div class="field"><label for="cfLiquidez">Liquidez disponible (ARS)</label><input type="number" id="cfLiquidez" min="0" step="1000" placeholder="ej: 500000"></div>
+      </div>
+      <div class="form-error" id="clientFormError">Completá todos los campos para dar de alta al comitente.</div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="clientCancelBtn" style="flex:1;">Cancelar</button>
+        <button type="submit" class="btn btn-primary btn-sm" style="flex:1;">Agregar comitente</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modelModalOverlay">
+  <div class="modal">
+    <button class="modal-close" id="modelModalClose">✕</button>
+    <h2>Nueva cartera modelo</h2>
+    <div class="modal-sub">Definí el nombre y la asignación objetivo por instrumento</div>
+    <form id="modelForm">
+      <div class="field"><label for="mfName">Nombre de la cartera</label><input type="text" id="mfName" placeholder="ej: Moderada CER" required></div>
+      <label style="display:block; font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:8px;">Asignación objetivo</label>
+      <div id="mfAllocRows"></div>
+      <button type="button" class="btn btn-ghost btn-sm" id="mfAddRow" style="margin-bottom:10px;">+ Agregar instrumento</button>
+      <div class="alloc-total" id="mfTotal">Total asignado: 0%</div>
+      <div class="form-error" id="modelFormError">Completá el nombre y al menos un instrumento con % mayor a 0.</div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="modelCancelBtn" style="flex:1;">Cancelar</button>
+        <button type="submit" class="btn btn-primary btn-sm" style="flex:1;">Crear cartera modelo</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast">✓ Rebalanceo ejecutado con éxito</div>
+
+<script src="js/data.js"></script>
+<script src="js/dom.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/execution.js"></script>
+<script src="js/clients.js"></script>
+<script src="js/models.js"></script>
+<script src="js/connections.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
